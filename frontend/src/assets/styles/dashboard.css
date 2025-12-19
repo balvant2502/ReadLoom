@@ -72,7 +72,13 @@ body {
     padding: 8px 20px;
     border: 1.5px solid var(--maroon);
     border-radius: 4px;
-    color: var(--maroon) !important;
+    color: white !important;
+    background-color: var(--maroon) !important;
+    transition: opacity 0.3s;
+}
+
+.btn-login:hover {
+    opacity: 0.9;
 }
 
 /* 3. Hero Section */
