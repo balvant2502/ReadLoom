@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ReadLoom</title>
+    <link rel="stylesheet" href="../src/assets/styles/starting_page.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="books.html" class="logo">Read<span>Loom</span></a>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search books, authors, categories...">
+            </div>
+
+            <div class="nav-links">
+                <a href="categories.html">Categories</a>
+                <a href="shelves.html">Shelves</a>
+                <a href="achievements.html">Achievements</a>
+                <img src="https://via.placeholder.com/40" alt="User Profile" class="profile-trigger" id="profile-btn">
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-slider" id="profile-slider">
+        <div class="slider-header">
+            <button id="close-slider">&times;</button>
+            <h3>My Profile</h3>
+        </div>
+        <div class="slider-content">
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span class="maroon-text">15</span>
+                    <p>Day Streak</p>
+                </div>
+                <div class="stat-item">
+                    <span class="maroon-text">12</span>
+                    <p>Books Read</p>
+                </div>
+            </div>
+            <hr>
+            <ul class="slider-links">
+                <li><a href="settings.html">Account Settings</a></li>
+                <li><a href="author-dash.html">Switch to Author Mode</a></li>
+                <li><a href="help.html">Help Center</a></li>
+                <li><a href="index.html" class="logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <main class="container dash-content">
+        
+        <section class="reading-now">
+            <h2 class="section-title">Continue Reading</h2>
+            <div class="horizontal-scroll">
+                <div class="book-card progress-card">
+                    <div class="book-cover mini"></div>
+                    <div class="book-info">
+                        <h3>The Great Gatsby</h3>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 65%;"></div>
+                        </div>
+                        <span class="progress-text">65% complete</span>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section class="recommendations">
+            <h2 class="section-title">Personalized for You</h2>
+            <div class="book-grid">
+                <div class="book-card">
+                    <div class="book-cover"></div>
+                    <div class="book-info">
+                        <h3>1984</h3>
+                        <p>George Orwell</p>
+                    </div>
+                </div>
+                </div>
+        </section>
+    </main>
+
+    <script src="../src/components/dashboard.js"></script>
+</body>
+</html>

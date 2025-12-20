@@ -158,3 +158,94 @@ body {
     color: var(--text-muted);
     font-size: 0.85rem;
 }
+/* Progress Bar Styling */
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: #eeeeee;
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--maroon);
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Profile Trigger (Avatar) */
+.profile-trigger {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.profile-trigger:hover {
+    border-color: var(--maroon);
+}
+
+/* Profile Slider Layout */
+.profile-slider {
+    position: fixed;
+    top: 0;
+    right: -350px; /* Hidden */
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    z-index: 2000;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 30px;
+}
+
+.profile-slider.active {
+    right: 0;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#close-slider {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.maroon-text {
+    color: var(--maroon);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.slider-links {
+    list-style: none;
+    margin-top: 20px;
+}
+
+.slider-links li {
+    padding: 12px 0;
+}
+
+.slider-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.slider-links a.logout {
+    color: var(--maroon);
+}
