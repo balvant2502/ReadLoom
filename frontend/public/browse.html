@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Books | ReadLoom</title>
+
+    <link rel="stylesheet" href="../src/assets/styles/browse.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">Read<span>Loom</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- middle -->
+<section class="browse-hero">
+    <div class="container browse-center">
+
+        <div class="browse-icon">📖</div>
+
+        <h1 class="browse-title">
+            Browse <span>Books</span>
+        </h1>
+
+        <p class="browse-subtitle">
+            Discover your next favorite read from our curated collection
+        </p>
+
+    
+        <div class="browse-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search by title or author...">
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- FILTER BAR -->
+
+
+<section class="filter-section">
+    <div class="container filter-flex">
+
+        <div class="filter-group">
+            <span class="filter-label">Category:</span>
+            <button class="pill active">All</button>
+            <button class="pill">Classic</button>
+            <button class="pill">Fiction</button>
+            <button class="pill">Dystopian</button>
+            <button class="pill">Romance</button>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Popularity:</span>
+            <button class="pill">All</button>
+            <button class="pill active">Most Popular</button>
+            <button class="pill">Trending</button>
+            <button class="pill">New Arrivals</button>
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- BOOKS -->
+<section class="book-section">
+    <div class="container">
+        <h2 class="section-title">Browse Books</h2>
+
+        <div class="book-grid">
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>The Great Gatsby</h3>
+                    <p>F. Scott Fitzgerald</p>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>1984</h3>
+                    <p>George Orwell</p>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>The Alchemist</h3>
+                    <p>Paulo Coelho</p>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>A Brief History of Time</h3>
+                    <p>Stephen Hawking</p>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>Pride and Prejudice</h3>
+                    <p>Jane Austen</p>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover"></div>
+                <div class="book-info">
+                    <h3>Sapiens</h3>
+                    <p>Yuval Noah Harari</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script src="../src/components/browse.js"></script>
+</body>
+</html>
