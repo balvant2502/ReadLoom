@@ -148,6 +148,21 @@ body {
     transform: translateY(-5px);
 }
 
+/* Ensure images inside the cover fill the card while keeping aspect ratio */
+.book-cover a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover; /* Use 'contain' if you prefer whole image visible */
+    border-radius: 4px;
+}
+
 .book-info h3 {
     margin-top: 15px;
     font-size: 1rem;
@@ -249,3 +264,4 @@ body {
 .slider-links a.logout {
     color: var(--maroon);
 }
+

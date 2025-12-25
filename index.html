@@ -1,51 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReadLoom | Minimalist Reading & Publishing</title>
-    <link rel="stylesheet" href="frontend/src/assets/styles/starting_page.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
-</head>
-<body>
-
+    <link
+      rel="stylesheet"
+      href="frontend/src/assets/styles/starting_page.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">Read<span>Loom</span></a>
-            <!-- <a href="index.html" class="logo"><img src="../src/assets/images/ReadLoom_logo.png" alt="logo"></a> -->
-            <div class="nav-links">
-                <a href="frontend/public/explore.html">Explore</a>
-                <a href="publish.html">Write</a>
-                <a href="#">Sign in</a>
-                <a href="login.html" class="btn-login">Log in</a>
-            </div>
+      <div class="container">
+        <a href="index.html" class="logo">Read<span>Loom</span></a>
+        <!-- <a href="index.html" class="logo"><img src="../src/assets/images/ReadLoom_logo.png" alt="logo"></a> -->
+        <div class="nav-links">
+          <a href="frontend/public/explore.html">Explore</a>
+          <a href="publish.html">Write</a>
+          <a href="#">Sign in</a>
+          <a href="login.html" class="btn-login">Log in</a>
         </div>
+      </div>
     </nav>
 
     <header class="hero">
-        <div class="container">
-            <h1>Read deeper. <br>Publish freely.</h1>
-            <p>A minimalist sanctuary for readers and authors.</p>
-            <a href="frontend/public/browse.html" class="btn-primary">Start Reading</a>
-        </div>
+      <div class="container">
+        <h1>Read deeper. <br />Publish freely.</h1>
+        <p>A minimalist sanctuary for readers and authors.</p>
+        <a href="frontend/public/browse.html" class="btn-primary"
+          >Start Reading</a
+        >
+      </div>
     </header>
 
     <section class="book-section">
-        <div class="container">
-            <h2 class="section-title">Trending Now</h2>
-            <div class="book-grid">
-                <div class="book-card">
-                    <div class="book-cover"></div> <div class="book-info">
-                        <h3>The Great Gatsby</h3>
-                        <p>F. Scott Fitzgerald</p>
-                    </div>
-                </div>
-                <div class="book-card"><div class="book-cover"></div><div class="book-info"><h3>1984</h3><p>George Orwell</p></div></div>
-                <div class="book-card"><div class="book-cover"></div><div class="book-info"><h3>Brave New World</h3><p>Aldous Huxley</p></div></div>
-                <div class="book-card"><div class="book-cover"></div><div class="book-info"><h3>The Alchemist</h3><p>Paulo Coelho</p></div></div>
+      <div class="container">
+        <h2 class="section-title">Trending Now</h2>
+        <div class="book-grid">
+          <div class="book-card">
+            <div class="book-cover">
+                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/the great gatsby.jpg" alt="the great gatsby cover"></a>
             </div>
+            <div class="book-info">
+              <h3>The Great Gatsby</h3>
+              <p>F. Scott Fitzgerald</p>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover">
+                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/1984.jpg" alt="1984 cover"></a>
+            </div>
+            <div class="book-info">
+              <h3>1984</h3>
+              <p>George Orwell</p>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover">
+                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/brave new world.jpg" alt="brave new world cover"></a>
+            </div>
+            <div class="book-info">
+              <h3>Brave New World</h3>
+              <p>Aldous Huxley</p>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover">
+                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/the alchemist.jpg" alt="the alchemist cover"></a>
+            </div>
+            <div class="book-info">
+              <h3>The Alchemist</h3>
+              <p>Paulo Coelho</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
-
-</body>
+  </body>
 </html>

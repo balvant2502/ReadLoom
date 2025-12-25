@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadLoom | Write & Publish</title>
+    <link rel="stylesheet" href="../src/assets/styles/starting_page.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Read<span>Loom</span></a>
+            <div class="nav-links">
+                <a href="books.html">Explore</a>
+                <a href="publish.html">Write</a>
+                <a href="#">Sign in</a>
+                <a href="login.html" class="btn-login">Log in</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Share Your Story</h1>
+            <p>Publish your writing and reach readers worldwide.</p>
+            <a href="#publish-form" class="btn-primary">Start Writing</a>
+        </div>
+    </header>
+
+    <section class="book-section" id="publish-form">
+        <div class="container">
+            <h2 class="section-title">Write & Publish</h2>
+            <form class="publish-form">
+                <div class="form-group">
+                    <label for="title">Book Title</label>
+                    <input type="text" id="title" name="title" placeholder="Enter book title">
+                </div>
+                <div class="form-group">
+                    <label for="author">Author Name</label>
+                    <input type="text" id="author" name="author" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" name="content" rows="10" placeholder="Write your story here..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Publish</button>
+            </form>
+        </div>
+    </section>
+
+</body>
+</html>
