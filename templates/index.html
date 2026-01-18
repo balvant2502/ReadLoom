@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +7,7 @@
     <title>ReadLoom | Minimalist Reading & Publishing</title>
     <link
       rel="stylesheet"
-      href="frontend/src/assets/styles/starting_page.css"
+      href="{% static 'css/starting_page.css' %}"
     />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,700&display=swap"
@@ -22,7 +23,7 @@
           <a href="frontend/public/explore.html">Explore</a>
           <a href="publish.html">Write</a>
           <a href="#">Sign in</a>
-          <a href="login.html" class="btn-login">Log in</a>
+          <a href="../authentication/templates/login.html" class="btn-login">Log in</a>
         </div>
       </div>
     </nav>
@@ -43,7 +44,7 @@
         <div class="book-grid">
           <div class="book-card">
             <div class="book-cover">
-                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/the great gatsby.jpg" alt="the great gatsby cover"></a>
+                <a href="frontend/public/browse.html"><img src="../static/img/the great gatsby.jpg" alt="the great gatsby cover"></a>
             </div>
             <div class="book-info">
               <h3>The Great Gatsby</h3>
@@ -52,7 +53,7 @@
           </div>
           <div class="book-card">
             <div class="book-cover">
-                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/1984.jpg" alt="1984 cover"></a>
+                <a href="frontend/public/browse.html"><img src="../static/img/1984.jpg" alt="1984 cover"></a>
             </div>
             <div class="book-info">
               <h3>1984</h3>
@@ -61,7 +62,7 @@
           </div>
           <div class="book-card">
             <div class="book-cover">
-                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/brave new world.jpg" alt="brave new world cover"></a>
+                <a href="frontend/public/browse.html"><img src="../static/img/brave new world.jpg" alt="brave new world cover"></a>
             </div>
             <div class="book-info">
               <h3>Brave New World</h3>
@@ -70,7 +71,7 @@
           </div>
           <div class="book-card">
             <div class="book-cover">
-                <a href="frontend/public/browse.html"><img src="frontend/src/assets/images/the alchemist.jpg" alt="the alchemist cover"></a>
+                <a href="frontend/public/browse.html"><img src="../static/img/the alchemist.jpg" alt="the alchemist cover"></a>
             </div>
             <div class="book-info">
               <h3>The Alchemist</h3>
