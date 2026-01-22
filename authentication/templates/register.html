@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    ReadLoom | Register
+{% endblock %}
+
+{% block content %}
+    <div class="register-container">
+        <div class="register-hero">
+            <div class="hero-content">
+                <a href="{% url 'home' %}" class="logo">Read<span>Loom</span></a>
+                <h1>Begin your story.</h1>
+                <p>Join a community of dedicated readers and inspired authors.</p>
+            </div>
+        </div>
+
+        <main class="register-menu">
+            <div class="form-box">
+                <header class="form-header">
+                    <h2>Create Account</h2>
+                    <p>Fill in your details to get started</p>
+                </header>
+            </div>
+        </main>
+    </div>
+{% endblock %}
