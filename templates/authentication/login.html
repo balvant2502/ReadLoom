@@ -1,0 +1,44 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}Sign In | ReadLoom{% endblock %}
+
+{% block content %}
+<div class="split-container">
+    <div class="brand-section">
+        <div class="brand-content">
+            <h1 class="logo-text">Read<span>Loom</span></h1>
+            <blockquote class="brand-quote">
+                "A reader lives a thousand lives before he dies. The man who never reads lives only one."
+                <cite>— George R.R. Martin</cite>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="auth-card">
+            <header class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Please enter your credentials to continue.</p>
+            </header>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <span class="error-text">{{ field.errors|striptags }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>New to ReadLoom? <a href="{% url 'register' %}">Create an account</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | ReadLoom{% endblock %}
+
+{% block content %}
+<div class="dashboard-canvas">
+    <aside class="sidebar-elevated">
+        <div class="sidebar-branding">
+            <h2 class="premium-logo">Read<span>Loom</span></h2>
+        </div>
+        
+        <nav class="sidebar-links">
+            <div class="nav-group">
+                <span class="group-label">Personal</span>
+                <a href="#" class="nav-link active">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Insights
+                </a>
+                <a href="#" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+                    My Library
+                </a>
+            </div>
+
+            <div class="nav-group">
+                <span class="group-label">Community</span>
+                <a href="#" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    Literary Circles
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-user-card">
+            <div class="user-meta">
+                <p class="u-name">{{ user.first_name }}</p>
+                <p class="u-type">{{ user.user_type|upper }}</p>
+            </div>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="logout-minimal">Sign Out</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-canvas">
+        <header class="canvas-header">
+            <div class="greeting">
+                <h1>Welcome, {{ user.username }}.</h1>
+                <p>Curating your literary journey for February 2026.</p>
+            </div>
+            <div class="action-zone">
+                <button class="btn-premium">+ New Entry</button>
+            </div>
+        </header>
+
+        <div class="grid-stats">
+            <div class="card-glass">
+                <p class="card-tag">Reading Progress</p>
+                <h3>14 <small>Volumes</small></h3>
+                <div class="progress-bar-container">
+                    <div class="progress-fill" style="width: 70%;"></div>
+                </div>
+            </div>
+            <div class="card-glass">
+                <p class="card-tag">Writing Contributions</p>
+                <h3>08 <small>Chapters</small></h3>
+            </div>
+            <div class="card-glass maroon-fill">
+                <p class="card-tag">Loom Membership</p>
+                <h3>Elite <small>Member</small></h3>
+            </div>
+        </div>
+
+        <div class="canvas-split">
+            <section class="activity-log">
+                <h4 class="section-title">Timeline</h4>
+                <div class="timeline-item">
+                    <div class="time-marker"></div>
+                    <div class="time-text">
+                        <p>Purchased <strong>The Alchemist</strong></p>
+                        <span>Today, 10:45 AM</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="time-marker"></div>
+                    <div class="time-text">
+                        <p>Joined the <strong>"Victorian Classics"</strong> circle.</p>
+                        <span>Yesterday</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}
