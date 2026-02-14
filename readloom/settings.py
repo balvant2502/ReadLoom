@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     #Apps
 
     'authentication',
-    
+    'books',
+    'gamification',
+    'shelves'
     
 ]
 
