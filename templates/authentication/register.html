@@ -1,0 +1,44 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}Join ReadLoom{% endblock %}
+
+{% block content %}
+<div class="split-container">
+    <div class="brand-section">
+        <div class="brand-content">
+            <h1 class="logo-text">Read<span>Loom</span></h1>
+            <blockquote class="brand-quote">
+                "Weave your own story into the fabric of time."
+                <cite>— The ReadLoom Collective</cite>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="auth-card">
+            <header class="auth-header">
+                <h2>Create Account</h2>
+                <p>Start your journey with us today.</p>
+            </header>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <span class="error-text">{{ field.errors|striptags }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn-primary">Register Now</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,60 +1,40 @@
 from django.shortcuts import render, redirect
-from django.core.validators import validate_email, ValidationError
-from django.contrib.auth.hashers import make_password
-from django.contrib import messages
-from django.db import IntegrityError
-from .models import CustomUser
-
-# Create your views here.
-
-def login_request(request):
-    return render(request, 'authentication/login.html', {})
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from .forms import RegisterForm, LoginForm
 
 
-def register_request(request):
-    errors = {}
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+def register_view(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = RegisterForm()
 
-    
-        if not username:
-            errors['username'] = 'Username is required.'
-        if not email:
-            errors['email'] = 'Email is required.'
-        else:
-            try:
-                validate_email(email)
-            except ValidationError:
-                errors['email'] = 'Invalid email format.'
-        if not password:
-            errors['password'] = 'Password is required.'
-        if password != confirm_password:
-            errors['confirm_password'] = 'Passwords do not match.'
+    return render(request, 'authentication/register.html', {'form': form})
 
-        if not errors:
-            try:
-                CustomUser.objects.create(
-                    username=username,
-                    email=email,
-                    password=make_password(password),
-                    user_type='reader'  
-                )
-                messages.success(request, 'Account created successfully! Please log in.')
-                return redirect('login')
-            except IntegrityError as e:
-                error_message = str(e)
-                if 'username' in error_message:
-                    errors['username'] = 'Username already exists.'
-                if 'email' in error_message:
-                    errors['email'] = 'Email already exists.'
-                else:
-                    errors['general'] = 'An error occurred during registration.'
 
-    return render(request, 'authentication/register.html', {'errors': errors})
-        
+def login_view(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            if(user.user_type == 'reader'):
+                return redirect('dashboard')
+    else:
+        form = LoginForm()
 
-def home(request):
-    return render(request, 'home_app/home.html')
+    return render(request, 'authentication/login.html', {'form': form})
+
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'authentication/dashboard.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
