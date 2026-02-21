@@ -23,7 +23,13 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+
             return redirect('dashboard')
+            if(user.user_type == 'reader'):
+                return redirect('dashboard')
+        else:
+            return redirect('home')
+
     else:
         form = LoginForm()
 
