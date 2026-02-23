@@ -27,8 +27,14 @@
         <div class="sidebar-user-card">
             <div class="user-meta">
                 <p class="u-name">{{ user.first_name }}</p>
-                <p class="u-type">{{ user.user_type|upper }}</p>
-            </div>
+                <p class="u-type">
+                    {% if user.is_superuser %}
+                        Admin
+                        {% else %}
+                        {{ user.get_user_type_display }}
+                        {% endif %}
+                    </p>
+                    </div>
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="logout-minimal">Sign Out</button>
