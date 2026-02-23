@@ -10,7 +10,11 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('login')
+            if(user.user_type == 'reader'):
+                return redirect('user_dashboard')
+            elif(user.user_type == 'author'):
+                return redirect('author_dashboard')
+            return redirect('admin_dashboard')
     else:
         form = RegisterForm()
 
@@ -23,22 +27,28 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-
-            return redirect('dashboard')
             if(user.user_type == 'reader'):
-                return redirect('dashboard')
-        else:
-            return redirect('home')
-
+                return redirect('user_dashboard')
+            elif(user.user_type == 'author'):
+                return redirect('author_dashboard')
+            return redirect('admin_dashboard')
     else:
         form = LoginForm()
-
     return render(request, 'authentication/login.html', {'form': form})
 
 
 @login_required
-def dashboard_view(request):
-    return render(request, 'authentication/dashboard.html')
+def user_dashboard_view(request):
+    return render(request, 'authentication/user_dashboard.html')
+
+@login_required
+def author_dashboard_view(request):
+    return render(request, 'authentication/author_dashboard.html')
+
+@login_required
+def admin_dashboard_view(request):
+    return render(request, 'authentication/admin_dashboard.html')
+
 
 def logout_view(request):
     logout(request)

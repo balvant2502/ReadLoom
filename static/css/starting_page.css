@@ -1,0 +1,216 @@
+/* --- 1. GLOBAL RESET & BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* --- 2. NAVIGATION BAR --- */
+.navbar {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Lora', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #800000;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: #1a1a1a;
+    font-weight: 400;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4b5563;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #800000;
+}
+
+.btn-login {
+    background: #800000;
+    color: #ffffff !important;
+    padding: 10px 24px;
+    border-radius: 6px;
+    transition: background 0.3s ease !important;
+}
+
+.btn-login:hover {
+    background: #630d16;
+}
+
+/* --- 3. HERO SECTION --- */
+.hero {
+    padding: 120px 0 80px;
+    text-align: center;
+    background: linear-gradient(to bottom, #fffcfc 0%, #ffffff 100%);
+}
+
+.hero h1 {
+    font-family: 'Lora', serif;
+    font-size: 4rem;
+    line-height: 1.1;
+    color: #1a1a1a;
+    margin-bottom: 24px;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin-bottom: 40px;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 16px 36px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* --- 4. TRENDING BOOKS SECTION --- */
+.book-section {
+    padding: 100px 0;
+    background-color: #ffffff;
+}
+
+.section-title {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    margin-bottom: 50px;
+    text-align: left;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #800000;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.book-card {
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-10px);
+}
+
+.book-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    background-color: #f3f4f6; /* Fallback for missing images */
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.book-card:hover .book-cover img {
+    transform: scale(1.05);
+}
+
+.book-info h3 {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.book-info p {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* --- 5. RESPONSIVE DESIGN --- */
+@media (max-width: 1024px) {
+    .book-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .hero h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Consider a hamburger menu for mobile */
+    }
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .container {
+        padding: 0 20px;
+    }
+}

@@ -1,0 +1,213 @@
+/* --- 1. CORE & TYPOGRAPHY --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fdfdfd; /* Off-white paper feel */
+    font-family: 'Inter', sans-serif;
+    color: #121212;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.workspace-wrapper {
+    max-width: 1300px;
+    margin: 80px auto;
+    padding: 0 60px;
+}
+
+/* --- 2. THE HEADER (Editorial Contrast) --- */
+.workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 100px;
+    border-bottom: 3px solid #121212; /* Heavy editorial line */
+    padding-bottom: 40px;
+}
+
+.label-accent {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #800000; /* ReadLoom Maroon */
+    display: block;
+    margin-bottom: 12px;
+}
+
+.workspace-header h1 {
+    font-family: 'Lora', serif;
+    font-size: 4rem; /* Bold, oversized typography */
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.subtext {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-top: 15px;
+    font-weight: 400;
+}
+
+.btn-text {
+    text-decoration: none;
+    color: #121212;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 30px;
+    border-bottom: 1px solid transparent;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-text:hover {
+    color: #800000;
+    border-color: #800000;
+}
+
+/* --- 3. THE ANALYTICS GRID (Weighted Minimalism) --- */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin-bottom: 120px;
+}
+
+.insight-card {
+    padding: 0;
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.card-tag {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.card-value {
+    font-family: 'Lora', serif;
+    font-size: 4.5rem; /* Massive emphasis on data */
+    font-weight: 400;
+    line-height: 1;
+    color: #121212;
+    margin-bottom: 10px;
+}
+
+.insight-card p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.insight-card.highlight .card-value {
+    color: #800000; /* Highlight the most important metric */
+}
+
+/* --- 4. ACTION BAR (The Signature Button) --- */
+.action-bar { margin-bottom: 60px; }
+
+.btn-black {
+    background: #121212;
+    color: white;
+    padding: 20px 45px;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    border-radius: 0; /* Square, architectural edges */
+    transition: all 0.4s;
+    display: inline-block;
+}
+
+.btn-black:hover {
+    background: #800000;
+    padding-right: 60px; /* Subtle expansion effect */
+}
+
+/* --- 5. EDITORIAL TABLE (Structured & Sophisticated) --- */
+.table-section {
+    margin-top: 40px;
+}
+
+.table-title {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+.editorial-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.editorial-table th {
+    text-align: left;
+    padding: 25px 20px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #94a3b8;
+    border-bottom: 2px solid #121212;
+}
+
+.editorial-table td {
+    padding: 35px 20px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 1.1rem;
+    transition: 0.2s;
+}
+
+.editorial-table tr:hover td {
+    background-color: #fafafa;
+}
+
+.book-title { 
+    font-weight: 700; 
+    font-family: 'Lora', serif; 
+    font-size: 1.3rem; 
+}
+
+.reading-count { 
+    font-family: 'Lora', serif; 
+    font-weight: 500; 
+    font-size: 1.4rem; 
+}
+
+.status-badge { 
+    color: #800000; 
+    font-weight: 800; 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em;
+}
+
+.link-edit { 
+    color: #121212; 
+    text-decoration: none; 
+    font-weight: 800; 
+    font-size: 0.85rem;
+    border-bottom: 2px solid transparent;
+}
+
+.link-edit:hover { border-color: #800000; color: #800000; }
+
+.link-delete { 
+    color: #cbd5e1; 
+    text-decoration: none; 
+    font-size: 0.85rem; 
+    margin-left: 20px;
+}
+
+.link-delete:hover { color: #dc2626; }
