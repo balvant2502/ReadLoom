@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upload Book{% endblock %}
+
+{% block content %}
+<div class="form-section">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Upload Book</h2>
+            <p>Submit your book for approval</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="btn-primary">
+                Upload Book
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

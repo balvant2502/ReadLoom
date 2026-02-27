@@ -11,7 +11,9 @@ from .models import CustomUser
 class RegisterForm(UserCreationForm):
     
     email = forms.EmailField(required=True)
-
+    user_type = forms.ChoiceField(
+        choices=[('reader', 'Reader'), ('author', 'Author')]
+    )
     class Meta:
         model = CustomUser
         fields = ['first_name','email','password1', 'password2', 'user_type'] 

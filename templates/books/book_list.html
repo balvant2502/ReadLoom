@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% load static %} {% block title %}Explore Books
+{%endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/books/books.css' %}" />
+{% endblock %} {% block content %}
+
+<div class="container">
+  <h2 class="page-title">Explore Books</h2>
+
+  <!-- Search + Filter -->
+  <form method="GET" class="filter-form">
+    <input
+      type="text"
+      name="q"
+      placeholder="Search books..."
+      value="{{ request.GET.q }}"
+    />
+
+    <select name="category">
+      <option value="">All Categories</option>
+      {% for value, label in categories %}
+      <option
+        value="{{ value }}"
+        {%
+        if
+        request.GET.category=""
+        ="value"
+        %}selected{%
+        endif
+        %}
+      >
+        {{ label }}
+      </option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn-primary">Filter</button>
+  </form>
+
+  <!-- Book Grid -->
+  <div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+      <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" />
+
+      <h3>{{ book.title }}</h3>
+
+      <p>{{ book.category }}</p>
+
+      {% if user.is_authenticated %}
+      <a href="{% url 'book_detail' book.slug %}" class="read-btn"> Read </a>
+      {% else %}
+      <a href="{% url 'login' %}" class="read-btn"> Login to Read </a>
+      {% endif %}
+    </div>
+    {% empty %}
+    <p>No books found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
