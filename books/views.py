@@ -2,11 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from authentication.decorators import role_required
 from .forms import BookForm
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from .models import Book
-from .models import BookRead
+from .models import Book, BookRead, ReadingProgress
 from django.db.models import Q
+from django.views.decorators.clickjacking import xframe_options_exempt
+from django.http import HttpResponse, Http404, StreamingHttpResponse
+import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 @login_required
 @role_required('author')
@@ -72,33 +77,57 @@ def book_detail(request, slug):
         book.save()
     return render(request, 'books/book_detail.html', {'book': book})
 
-@login_required
-@role_required('author')
-def edit_book(request, slug):
-
-    book = get_object_or_404(Book, slug=slug, author=request.user)
-
-    # to Prevent editing if approved
-    if book.status == 'approved':
-        return redirect('author_dashboard')
-
-    if request.method == "POST":
-        form = BookForm(request.POST, request.FILES, instance=book)
-        if form.is_valid():
-            form.save()
-            return redirect('author_dashboard')
-    else:
-        form = BookForm(instance=book)
-
-    return render(request, 'books/edit_book.html', {'form': form})
 
 @login_required
-@role_required('author')
-def delete_book(request, slug):
+def book_reader(request, slug):
+    book = get_object_or_404(Book, slug=slug, status='approved')
 
-    book = get_object_or_404(Book, slug=slug, author=request.user)
+    if not book.book_file:
+        return HttpResponse("No PDF file available for this book.", status=404)
+    progress = ReadingProgress.objects.filter(
+    user=request.user,
+    book=book
+    ).first()
 
-    if request.method == "POST":
-        book.delete()
+    last_page = progress.last_page if progress else 1
+    return render(request, 'books/reader.html', {'book': book, 'last_page': last_page})
 
-    return redirect('author_dashboard')
+def stream_pdf(request, slug):
+    book = get_object_or_404(Book, slug=slug)
+
+    response = HttpResponse(
+        book.book_file.open('rb'),
+        content_type='application/pdf'
+    )
+    response['Content-Disposition'] = 'inline'
+    return response
+
+@csrf_exempt
+def save_progress(request, slug):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    data = json.loads(request.body)
+
+    page = data.get('page')
+    total = data.get('total')
+
+    book = get_object_or_404(Book, slug=slug)
+
+    progress = (page / total) * 100
+
+    obj, created = ReadingProgress.objects.update_or_create(
+        user=request.user,
+        book=book,
+        defaults={
+            'last_page': page,
+            'total_pages': total,
+            'progress': progress
+        }
+    )
+
+    return JsonResponse({
+        'status': 'saved',
+        'page': page,
+        'progress': round(progress, 2)
+    })

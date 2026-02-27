@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from django.http import HttpResponse
 from .decorators import role_required
 from books.models import Book
 from django.db.models import Avg, Sum
+
 
 def register_view(request):
     if request.method == "POST":
@@ -42,7 +43,7 @@ def login_view(request):
 @login_required
 @role_required('reader')
 def user_dashboard_view(request):
-    return render(request, 'authentication/user_dashboard.html')
+    return render(request, 'authentication/reader_dashboard.html')
 
 @login_required
 @role_required('author')
@@ -63,6 +64,7 @@ def author_dashboard_view(request):
         return render(request, 'authentication/author_dashboard.html', context)
 
 @login_required
+@role_required('admin')
 def admin_dashboard_view(request):
     if not request.user.is_superuser:
         return redirect('login')
@@ -80,3 +82,16 @@ def redirect_by_role(user):
         return redirect('author_dashboard')
     else:
         return redirect('user_dashboard')
+    
+@login_required
+def profile_update_view(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect_by_role(request.user)
+    else:
+        form = ProfileUpdateForm(instance=request.user, user=request.user)
+
+    return render(request, 'authentication/profile_update.html', {'form': form})
+        
