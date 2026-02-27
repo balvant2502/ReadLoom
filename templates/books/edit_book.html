@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-section">
+    <div class="auth-card">
+        <h2>Edit Book</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn-primary">
+                Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
