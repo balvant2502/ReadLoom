@@ -1,25 +1,63 @@
-{% extends "base.html" %} {% load static %} {% block title %}{{ book.title
-}}{%endblock %} {% block extra_css %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/books/books.css' %}" />
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 
 <div class="book-detail-container">
-  <div class="book-info">
-    <img src="{{ book.cover_image.url }}" class="detail-cover" />
+  <div class="book-main">
+    <div class="book-info">
+      <img src="{{ book.cover_image.url }}" class="detail-cover" alt="Cover for {{ book.title }}" />
 
-    <div class="detail-meta">
-      <h2>{{ book.title }}</h2>
-      <p><strong>Category:</strong> {{ book.get_category_display }}</p>
-      <p><strong>Reads:</strong> {{ book.reads }}</p>
-      <p>{{ book.description }}</p>
+      <div class="detail-meta">
+        <h1 class="book-title">{{ book.title }}</h1>
+        <p class="book-sub">by <strong>{{ book.author.first_name|default:book.author.email }}</strong></p>
+
+        <div class="book-tags">
+          <span class="tag">{{ book.get_category_display }}</span>
+          <span class="tag">{{ book.reads }} reads</span>
+        </div>
+
+        <p class="book-description">{{ book.description }}</p>
+      </div>
+    </div>
+
+    <div class="book-actions">
+      <a href="{% url 'book_reader' book.slug %}" class="btn-primary">Read / Open</a>
+      <a href="#" class="btn-secondary">Add to Shelf</a>
+      <a href="#" class="btn-ghost">Report</a>
     </div>
   </div>
 
-  <div class="reader-section">
-    <a href="{{ book.book_file.url }}" target="_blank" class="btn-primary">
-      Open Book
-    </a>
-  </div>
+  <aside class="book-side">
+    <div class="author-card">
+      <div class="author-avatar">{{ book.author.first_name|first|upper }}</div>
+      <div class="author-info">
+        <p class="author-name">{{ book.author.first_name|default:book.author.email }}</p>
+        <p class="author-meta">Member since {{ book.author.date_joined|date:"Y" }}</p>
+      </div>
+    </div>
+
+    <div class="book-stats">
+      <div class="stat">
+        <div class="stat-value">{{ book.total_pages|default:"—" }}</div>
+        <div class="stat-label">Pages</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">{{ book.average_rating|floatformat:1 }}</div>
+        <div class="stat-label">Rating</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">{{ book.reads }}</div>
+        <div class="stat-label">Reads</div>
+      </div>
+    </div>
+  </aside>
 </div>
 
 {% endblock %}

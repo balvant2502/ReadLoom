@@ -96,6 +96,7 @@ html, body {
     color: #64748b;
     font-weight: 400;
     letter-spacing: 0.2px;
+    padding-bottom: 20px;
 }
 
 .form-group { margin-bottom: 1.5rem; }
@@ -143,6 +144,14 @@ html, body {
 }
 
 .auth-footer a { color: #800000; text-decoration: none; font-weight: 600; }
+
+.error-text {
+    display: block;
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    font-weight: 500;
+}
 
 /* ============================================================
    3. CYBER DASHBOARD (Dark Theme)

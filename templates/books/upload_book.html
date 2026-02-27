@@ -4,22 +4,124 @@
 {% block title %}Upload Book{% endblock %}
 
 {% block content %}
-<div class="form-section">
+<link rel="stylesheet" href="{% static 'css/authentication/style.css' %}">
+<style>
+    .upload-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    input[type="file"] {
+        display: none;
+    }
+    
+    .file-input-label {
+        display: block;
+        padding: 12px 16px;
+        background-color: #f9fafb;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        color: #6b7280;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+    
+    .file-input-label:hover {
+        background-color: #f3f4f6;
+        border-color: #800000;
+        color: #800000;
+    }
+</style>
+
+<div class="upload-container">
     <div class="auth-card">
         <div class="auth-header">
             <h2>Upload Book</h2>
             <p>Submit your book for approval</p>
         </div>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
-            {{ form.as_p }}
+            <!-- TITLE -->
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <span class="error-text">{{ form.title.errors|striptags }}</span>
+                {% endif %}
+            </div>
 
-            <button type="submit" class="btn-primary">
-                Upload Book
-            </button>
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <span class="error-text">{{ form.description.errors|striptags }}</span>
+                {% endif %}
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <span class="error-text">{{ form.category.errors|striptags }}</span>
+                {% endif %}
+            </div>
+
+            <!-- BOOK FILE -->
+            <div class="form-group">
+                <label for="{{ form.book_file.id_for_label }}">{{ form.book_file.label }}</label>
+                <div class="file-input-wrapper">
+                    {{ form.book_file }}
+                    <label for="{{ form.book_file.id_for_label }}" class="file-input-label">
+                        <span id="book-file-name">Choose PDF file</span>
+                    </label>
+                </div>
+                {% if form.book_file.errors %}
+                    <span class="error-text">{{ form.book_file.errors|striptags }}</span>
+                {% endif %}
+            </div>
+
+            <!-- COVER IMAGE -->
+            <div class="form-group">
+                <label for="{{ form.cover_image.id_for_label }}">{{ form.cover_image.label }}</label>
+                <div class="file-input-wrapper">
+                    {{ form.cover_image }}
+                    <label for="{{ form.cover_image.id_for_label }}" class="file-input-label">
+                        <span id="cover-image-name">Choose cover image</span>
+                    </label>
+                </div>
+                {% if form.cover_image.errors %}
+                    <span class="error-text">{{ form.cover_image.errors|striptags }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-primary">Upload Book</button>
         </form>
     </div>
 </div>
+
+<script>
+    // Update file label with selected filename
+    document.getElementById('id_book_file').addEventListener('change', function(e) {
+        const filename = e.target.files[0]?.name || 'Choose PDF file';
+        document.getElementById('book-file-name').textContent = filename;
+    });
+
+    document.getElementById('id_cover_image').addEventListener('change', function(e) {
+        const filename = e.target.files[0]?.name || 'Choose cover image';
+        document.getElementById('cover-image-name').textContent = filename;
+    });
+</script>
 {% endblock %}

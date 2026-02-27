@@ -77,3 +77,24 @@ class BookRead(models.Model):
 
     class Meta:
         unique_together = ('user', 'book')
+
+
+class ReadingProgress(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE
+    )
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE
+    )
+    last_page = models.PositiveIntegerField(default=1)
+    total_pages = models.PositiveIntegerField(default=0)
+    progress = models.FloatField(default=0.0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'book')
+
+    def __str__(self):
+        return f"{self.user} → {self.book} ({self.progress:.1f}%)"
