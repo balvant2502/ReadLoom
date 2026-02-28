@@ -17,6 +17,14 @@
     />
   </head>
   <body>
+    {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="workspace-wrapper">
       <header class="workspace-header">
         <div class="header-left">
@@ -60,9 +68,9 @@
         </div>
       </section>
 
-    <div class="action-bar">
+      <div class="action-bar">
         <a href="{% url 'upload_book' %}" class="btn-black">Upload New Book</a>
-    </div>
+      </div>
 
       <section class="table-section">
         <h3 class="table-title">Your Books</h3>
