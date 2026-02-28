@@ -5,8 +5,8 @@ from django.contrib import messages
 from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from django.http import HttpResponse
 from .decorators import role_required
-from books.models import Book
-from django.db.models import Avg, Sum
+from books.models import Book, ReadingProgress
+from django.db.models import Avg, Prefetch, Sum
 
 
 def register_view(request):
@@ -44,7 +44,26 @@ def login_view(request):
 @login_required
 @role_required('reader')
 def user_dashboard_view(request):
-    return render(request, 'authentication/reader_dashboard.html')
+
+    # only user's active reading records
+    progress_qs = ReadingProgress.objects.filter(
+        user=request.user,
+        is_finished=False
+    )
+
+    current_books = Book.objects.filter(
+        readingprogress__user=request.user,
+        readingprogress__is_finished=False,
+        status='approved'
+    ).prefetch_related(
+        Prefetch(
+            'readingprogress_set',
+            queryset=progress_qs,
+            to_attr='user_progress'
+        )
+    ).distinct()
+
+    return render(request, 'authentication/dashboard.html', {'current_books': current_books})
 
 @login_required
 @role_required('author')
@@ -82,7 +101,7 @@ def redirect_by_role(user):
     elif user.user_type == 'author':
         return redirect('author_dashboard')
     else:
-        return redirect('user_dashboard')
+        return redirect('dashboard')
     
 @login_required
 def profile_update_view(request):
@@ -96,4 +115,15 @@ def profile_update_view(request):
         form = ProfileUpdateForm(instance=request.user, user=request.user)
 
     return render(request, 'authentication/profile_update.html', {'form': form})
+
+
+def profile_view(request, first_name):
+    user = request.user
+    if user.first_name != first_name:
+        messages.error(request, "You can only view your own profile.")
+        return redirect_by_role(user)
+    
+
+    return render(request, 'authentication/view_profile.html', {'user': user})
+
         

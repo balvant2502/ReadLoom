@@ -1,0 +1,130 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ReadLoom</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+    <!-- Google Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="sidebar">
+        <h2 class="logo">ReadLoom</h2>
+
+        <nav>
+          <a
+            href="{% url 'dashboard' %}"
+            class="{% if request.path == '/dashboard/' %}active{% endif %}"
+          >
+            Dashboard
+          </a>
+
+          <a
+            href="{% url 'browse_books' %}"
+            class="{% if request.path == '/browse/' %}active{% endif %}"
+          >
+            Browse
+          </a>
+        </nav>
+
+        <!-- USER SECTION -->
+        <div class="user">
+          <button
+            type="button"
+            class="user-link"
+            onclick="toggleProfileMenu(event)"
+          >
+            {{ user.first_name }}
+          </button>
+          <small>reader</small>
+        </div>
+      </aside>
+      <!-- ================= END SIDEBAR ================= -->
+
+      <!-- ================= PROFILE SLIDE MENU ================= -->
+      <div id="profileMenu" class="profile-menu">
+        <div class="profile-header">
+          <h3>{{ user.first_name }}</h3>
+          <span>Reader</span>
+        </div>
+
+        <a href="#">
+          <span class="material-icons">person</span>
+          View Profile
+        </a>
+
+        <a href="{% url 'profile_update' %}">
+          <span class="material-icons">edit</span>
+          Update Profile
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout">
+          <span class="material-icons">logout</span>
+          Sign Out
+        </a>
+      </div>
+      <!-- ================= END PROFILE MENU ================= -->
+
+      <!-- ================= MAIN CONTENT ================= -->
+      <main class="content">{% block content %}{% endblock %}</main>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+      let menuOpen = false;
+
+      function toggleProfileMenu(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const menu = document.getElementById("profileMenu");
+
+        // small delay prevents click-through
+        setTimeout(() => {
+          menu.classList.toggle("active");
+          menuOpen = menu.classList.contains("active");
+        }, 10);
+      }
+
+      // stop clicks inside menu from closing or triggering parent
+      document
+        .getElementById("profileMenu")
+        .addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+
+      // close when clicking anywhere else
+      document.addEventListener("click", function () {
+        if (menuOpen) {
+          document.getElementById("profileMenu").classList.remove("active");
+          menuOpen = false;
+        }
+      });
+
+
+      // for ajax search
+      const input = document.getElementById("searchInput");
+      const form = document.getElementById("searchForm");
+
+      let timer = null;
+
+      input.addEventListener("input", function () {
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+          form.submit(); // calls YOUR browse_books view
+        }, 500); // wait while user typing
+      });
+    </script>
+  </body>
+</html>

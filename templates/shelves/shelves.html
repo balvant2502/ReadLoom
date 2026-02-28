@@ -1,0 +1,22 @@
+{% extends 'authentication/base.html' %}
+{% block content %}
+
+<h2>My Shelves</h2>
+
+{% for shelf in shelves %}
+<div class="shelf">
+    <h3>{{ shelf.name }}</h3>
+
+    <div class="book-grid">
+        {% for book in shelf.books.all %}
+        <div class="book-card">
+            <img src="{{ book.cover.url }}">
+            <h4>{{ book.title }}</h4>
+            <p>{{ book.author }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -3,13 +3,13 @@ from django.contrib.auth.decorators import login_required
 from authentication.decorators import role_required
 from .forms import BookForm
 from django.shortcuts import get_object_or_404
-from .models import Book, BookRead, ReadingProgress
+from .models import Book, ReadingProgress
 from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import HttpResponse, Http404, StreamingHttpResponse
 import os
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import json
 from django.contrib import messages
 
@@ -36,26 +36,6 @@ def author_books(request):
     return HttpResponse("Author Books Page Working")
 
 
-def book_list(request):
-        books = Book.objects.filter(status='approved')
-
-        # Search
-        query = request.GET.get('q')
-        if query:
-            books = books.filter(
-                Q(title__icontains=query) |
-                Q(description__icontains=query)
-            )
-       
-        # Category filter
-        category = request.GET.get('category')
-        if category:
-            books = books.filter(category=category)
-       
-        return render(request, 'books/book_list.html', {
-            'books': books,
-            'categories': Book.CATEGORY_CHOICES
-        })
 
 
 @login_required
@@ -73,13 +53,13 @@ def book_detail(request, slug):
         return redirect('author_dashboard')
 
     # Check if user already read this book
-    already_read = BookRead.objects.filter(
+    already_read = ReadingProgress.objects.filter(
         user=request.user,
         book=book
     ).exists()
 
     if not already_read:
-        BookRead.objects.create(
+        ReadingProgress.objects.create(
             user=request.user,
             book=book
         )
@@ -134,7 +114,7 @@ def book_reader(request, slug):
     user=request.user,
     book=book
     ).first()
-
+    
     last_page = progress.last_page if progress else 1
     return render(request, 'books/reader.html', {'book': book, 'last_page': last_page})
 
@@ -148,19 +128,30 @@ def stream_pdf(request, slug):
     response['Content-Disposition'] = 'inline'
     return response
 
-@csrf_exempt
+@require_POST
 def save_progress(request, slug):
+
     if not request.user.is_authenticated:
-        return redirect('login')
+        return JsonResponse({'error': 'Login required'}, status=401)
 
-    data = json.loads(request.body)
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-    page = data.get('page')
-    total = data.get('total')
+    page = int(data.get('page', 1))
+    total = int(data.get('total', 0))
+
+    if total <= 0:
+        return JsonResponse({'error': 'Invalid total pages'}, status=400)
 
     book = get_object_or_404(Book, slug=slug)
 
+    # prevent invalid values
+    page = min(page, total)
+
     progress = (page / total) * 100
+    progress = round(progress, 2)
 
     obj, created = ReadingProgress.objects.update_or_create(
         user=request.user,
@@ -168,12 +159,51 @@ def save_progress(request, slug):
         defaults={
             'last_page': page,
             'total_pages': total,
-            'progress': progress
+            'progress': progress,
+            'is_finished': progress >= 100
         }
     )
 
     return JsonResponse({
         'status': 'saved',
         'page': page,
-        'progress': round(progress, 2)
+        'progress': progress
+    })
+
+
+def browse_books(request):
+
+    books = Book.objects.filter(status='approved')
+
+    query = request.GET.get('q')
+    category = request.GET.get('category')
+
+    # SEARCH MODE
+    if query or category:
+
+        if query:
+            books = books.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(author__first_name__icontains=query)
+            )
+
+        if category:
+            books = books.filter(category=category)
+
+        return render(request, 'books/browse.html', {
+            'search_results': books,
+            'is_search': True,
+            'categories': Book.CATEGORY_CHOICES
+        })
+
+    # DEFAULT BROWSE MODE
+    trending_books = books.order_by('-reads')[:10]
+    recent_books = books.order_by('-created_at')[:10]
+
+    return render(request, 'books/browse.html', {
+        'trending_books': trending_books,
+        'recent_books': recent_books,
+        'is_search': False,
+        'categories': Book.CATEGORY_CHOICES
     })

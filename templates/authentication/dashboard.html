@@ -1,0 +1,66 @@
+{% extends 'authentication/base.html' %} {% block content %}
+
+<!-- CURRENTLY READING -->
+<h2>Currently Reading</h2>
+
+<div class="book-grid">
+  {% for book in current_books %}
+
+  <a href="{% url 'book_detail' book.slug %}" class="card-link">
+    <div class="book-card">
+      <img src="{{ book.cover_image.url }}" alt="book cover" />
+
+      <h4>{{ book.title }}</h4>
+
+      {% if book.user_progress %} 
+        {% with p=book.user_progress.0 %}
+            <div class="progress-bar">
+                <div
+                    class="progress-fill"
+                    style="width: {{ p.progress|default:0 }}%;"
+                ></div>
+            </div>
+
+            <span>{{ p.progress|floatformat:0 }}</span>
+        {% endwith %} 
+    {% endif %}
+
+      <span class="progress-text">{{ book.progress }}%</span>
+    </div>
+  </a>
+
+  {% endfor %}
+</div>
+
+<!-- STREAKS -->
+<h2 class="section-title">Reading Streaks</h2>
+
+<div class="stats">
+  <div class="stat-box">
+    <h3>🔥 5</h3>
+    <p>Current Streak</p>
+  </div>
+
+  <div class="stat-box">
+    <h3>⭐ 12</h3>
+    <p>Best Streak</p>
+  </div>
+
+  <div class="stat-box">
+    <h3>📚 62</h3>
+    <p>Total Sessions</p>
+  </div>
+</div>
+
+<!-- BADGES -->
+<h2 class="section-title">Badges</h2>
+
+<div class="badges">
+  <div class="badge">Fiction Lover</div>
+
+  <div class="badge">50 Books Completed</div>
+
+  <div class="badge">Night Reader</div>
+</div>
+
+{% endblock %}

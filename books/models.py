@@ -64,21 +64,6 @@ class Book(models.Model):
         return self.title
     
 
-class BookRead(models.Model):
-    user = models.ForeignKey(
-        CustomUser,
-        on_delete=models.CASCADE
-    )
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE
-    )
-    read_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'book')
-
-
 class ReadingProgress(models.Model):
     user = models.ForeignKey(
         CustomUser,
@@ -88,6 +73,8 @@ class ReadingProgress(models.Model):
         Book,
         on_delete=models.CASCADE
     )
+    read_at = models.DateTimeField(auto_now_add=True)
+    is_finished = models.BooleanField(default=False)
     last_page = models.PositiveIntegerField(default=1)
     total_pages = models.PositiveIntegerField(default=0)
     progress = models.FloatField(default=0.0)
