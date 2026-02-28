@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from django.http import HttpResponse
 from .decorators import role_required
@@ -89,6 +90,7 @@ def profile_update_view(request):
         form = ProfileUpdateForm(request.POST, instance=request.user, user=request.user)
         if form.is_valid():
             form.save()
+            messages.success(request, "Profile updated successfully!")
             return redirect_by_role(request.user)
     else:
         form = ProfileUpdateForm(instance=request.user, user=request.user)
