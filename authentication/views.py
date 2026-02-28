@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from django.http import HttpResponse
 from .decorators import role_required
+from books.models import Book
+from django.db.models import Avg, Sum
 
 
 def register_view(request):
@@ -46,7 +48,20 @@ def user_dashboard_view(request):
 @login_required
 @role_required('author')
 def author_dashboard_view(request):
-    return render(request, 'authentication/author_dashboard.html')
+        books = Book.objects.filter(author=request.user)
+
+        total_books = books.count()
+        total_reads = books.aggregate(total=Sum('reads'))['total'] or 0
+        avg_rating = books.aggregate(avg=Avg('average_rating'))['avg'] or 0
+    
+        context = {
+            'books': books,
+            'total_books': total_books,
+            'total_reads': total_reads,
+            'avg_rating': round(avg_rating, 2)
+        }
+    
+        return render(request, 'authentication/author_dashboard.html', context)
 
 @login_required
 @role_required('admin')

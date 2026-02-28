@@ -11,7 +11,7 @@ import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from django.contrib import messages
 
 @login_required
 @role_required('author')
@@ -76,6 +76,42 @@ def book_detail(request, slug):
         book.reads += 1
         book.save()
     return render(request, 'books/book_detail.html', {'book': book})
+
+
+
+@login_required
+@role_required('author')
+def edit_book(request, slug):
+
+    book = get_object_or_404(Book, slug=slug, author=request.user)
+
+    # To Prevent editing if approved
+    if book.status == 'approved':
+        messages.warning(request, "Approved books cannot be edited.")
+        return redirect('author_dashboard')
+
+    if request.method == "POST":
+        form = BookForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Book uploaded successfully and is pending approval.")
+            return redirect('author_dashboard')
+    else:
+        form = BookForm(instance=book)
+
+    return render(request, 'books/edit_book.html', {'form': form})
+
+
+@login_required
+@role_required('author')
+def delete_book(request, slug):
+
+    book = get_object_or_404(Book, slug=slug, author=request.user)
+
+    if request.method == "POST":
+        book.delete()
+
+    return redirect('author_dashboard')
 
 
 @login_required

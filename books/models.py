@@ -39,7 +39,7 @@ class Book(models.Model):
     book_file = models.FileField(upload_to='books/')
     cover_image = models.ImageField(upload_to='covers/')
 
-    total_pages = models.IntegerField(default=0)
+    total_pages = models.IntegerField(default=0,blank=True)
 
     status = models.CharField(
         max_length=20,

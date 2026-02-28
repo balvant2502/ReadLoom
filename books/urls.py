@@ -12,5 +12,7 @@ urlpatterns = [
 
     
     path('<slug:slug>/', views.book_detail, name='book_detail'),
+    path('edit/<slug:slug>/',views.edit_book,name='edit_book'),
+    path('delete/<slug:slug>/',views.delete_book,name='delete_book'),
     path('save-progress/<slug:slug>/', views.save_progress, name='save_progress'),
 ]
