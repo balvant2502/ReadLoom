@@ -60,7 +60,17 @@ def book_list(request):
 
 @login_required
 def book_detail(request, slug):
-    book = get_object_or_404(Book, slug=slug, status='approved')
+    # Try to get the book first
+    try:
+        book = Book.objects.get(slug=slug)
+    except Book.DoesNotExist:
+        raise Http404("Book not found")
+    
+    # Check if book is approved
+    if book.status != 'approved':
+        # If not approved, show error message
+        messages.error(request, "Unapproved books cannot be displayed.")
+        return redirect('author_dashboard')
 
     # Check if user already read this book
     already_read = BookRead.objects.filter(
