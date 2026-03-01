@@ -3,6 +3,7 @@
 /* ===== AUTHOR CONTENT ===== */
 .author-content {
     background: linear-gradient(135deg, #fdfdfd 0%, #f8f7f4 100%);
+    padding-top: 40px;
 }
 
 /* ===== WELCOME SECTION ===== */
@@ -413,9 +414,20 @@
 }
 
 .messages-container {
-    max-width: 800px;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    max-width: 1200px;
     margin: 20px auto;
+    padding: 0 40px;
+    z-index: 999;
     animation: slideDown 0.6s ease-out;
+    pointer-events: none;
+}
+
+.messages-container .alert {
+    pointer-events: auto;
 }
 
 @keyframes slideDown {
@@ -938,9 +950,20 @@
 }
 
 .messages-container {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
     max-width: 800px;
-    margin: 0 auto 30px;
+    margin: 20px auto;
+    padding: 0 40px;
+    z-index: 999;
     animation: slideDown 0.6s ease-out;
+    pointer-events: none;
+}
+
+.messages-container .alert {
+    pointer-events: auto;
 }
 
 @keyframes slideDown {
@@ -1167,9 +1190,16 @@
     }
 
     .messages-container {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
         max-width: 100%;
-        margin: 0 0 20px 0;
-        padding: 0 10px;
+        margin: 20px 0;
+        padding: 0 20px;
+        z-index: 999;
+        left: 0;
+        right: 0;
     }
 
     .alert {

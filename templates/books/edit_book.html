@@ -1,18 +1,32 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/books/book_detail_and_edit.css' %}"
+/>
+{% endblock %} {% block content %}
 <div class="form-section">
-    <div class="auth-card">
-        <h2>Edit Book</h2>
+  <div class="auth-card">
+    <h2>Edit Book Details</h2>
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %} {% for field in form %}
+      <div class="form-group">
+        {% if field.label %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% endif %} {{ field }} {% if field.help_text %}
+        <small>{{ field.help_text|safe }}</small>
+        {% endif %} {% if field.errors %}
+        <div class="errorlist">
+          {% for error in field.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
 
-            <button type="submit" class="btn-primary">
-                Save Changes
-            </button>
-        </form>
-    </div>
+      <button type="submit" class="btn-primary">Save Changes</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

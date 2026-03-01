@@ -4,91 +4,176 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ReadLoom | Minimalist Reading & Publishing</title>
+    <title>ReadLoom | Discover, Read & Unlock New Worlds</title>
     <link rel="stylesheet" href="{% static 'css/starting_page.css' %}" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Lora:ital,wght@0,400;0,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
   </head>
   <body>
+    <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
       <div class="container">
-        <a href="index.html" class="logo">Read<span>Loom</span></a>
-        <!-- <a href="index.html" class="logo"><img src="../src/assets/images/ReadLoom_logo.png" alt="logo"></a> -->
+        <a href="/" class="logo">Read<span>Loom</span></a>
         <div class="nav-links">
-          <a href="{% url 'register' %}">Sign Up</a>
-          <a href="{% url 'login' %}" class="btn-login">Log in</a>
+          {% if user.is_authenticated %}
+            <!-- Logged in user - show profile icon -->
+            {% if user.user_type == 'author' %}
+              <a href="{% url 'author_dashboard' %}" class="nav-profile-icon" title="Author Dashboard">
+                <span class="material-icons">dashboard</span>
+              </a>
+            {% else %}
+              <a href="{% url 'dashboard' %}" class="nav-profile-icon" title="Reader Dashboard">
+                <span class="material-icons">person</span>
+              </a>
+            {% endif %}
+          {% else %}
+            <!-- Not logged in - show Sign Up and Login -->
+            <a href="{% url 'register' %}">Sign Up</a>
+            <a href="{% url 'login' %}" class="btn-login">Log in</a>
+          {% endif %}
         </div>
       </div>
     </nav>
 
+    <!-- ===== HERO SECTION ===== -->
     <header class="hero">
       <div class="container">
-        <h1>Read deeper. <br />Publish freely.</h1>
-        <p>A minimalist sanctuary for readers and authors.</p>
-        <a href="{% url 'browse_books' %}" class="btn-primary"
-          >Start Reading</a
-        >
+        <div class="hero-accent">
+          <span class="accent-badge">✨ Your Journey into Stories Begins Here</span>
+        </div>
+        <h1>Discover, Read & <span class="highlight">Unlock New Worlds</span></h1>
+        <p class="hero-subtitle">Immerse yourself in thousands of books, track your reading journey, earn badges, and connect with a community of passionate readers.</p>
+        <div class="hero-buttons">
+          <a href="{% url 'browse_books' %}" class="btn-primary">Start Reading →</a>
+        </div>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="material-icons">menu_book</span>
+            <span class="stat-number">10K+</span>
+            <span class="stat-label">Books</span>
+          </div>
+          <div class="stat-item">
+            <span class="material-icons">people</span>
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Readers</span>
+          </div>
+          <div class="stat-item">
+            <span class="material-icons">emoji_events</span>
+            <span class="stat-number">100+</span>
+            <span class="stat-label">Badges</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <section class="book-section">
+    <!-- ===== FEATURED BOOKS SECTION ===== -->
+    <section class="featured-books-section">
       <div class="container">
-        <h2 class="section-title">Trending Now</h2>
-        <div class="book-grid">
-          <div class="book-card">
-            <div class="book-cover">
-              <a href="#"
-                ><img
-                  src="../static/img/the great gatsby.jpg"
-                  alt="the great gatsby cover"
-              /></a>
+        <div class="section-header">
+          <h2 class="section-title">Featured Books</h2>
+          <p class="section-subtitle">Handpicked stories waiting for you</p>
+          <a href="{% url 'browse_books' %}" class="view-all-link">View All →</a>
+        </div>
+
+        <div class="books-grid">
+          {% for book in featured_books %}
+          <div class="featured-book-card">
+            <div class="book-image-wrapper">
+              <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="book-image" />
+              <div class="book-overlay">
+                <a href="{% url 'book_detail' book.slug %}" class="btn-read">Read / Open</a>
+              </div>
+              <div class="book-badge">
+                <span class="material-icons">star</span>
+                {{ book.average_rating|floatformat:1 }}
+              </div>
             </div>
-            <div class="book-info">
-              <h3>The Great Gatsby</h3>
-              <p>F. Scott Fitzgerald</p>
-            </div>
-          </div>
-          <div class="book-card">
-            <div class="book-cover">
-              <a href="#"
-                ><img src="../static/img/1984.jpg" alt="1984 cover"
-              /></a>
-            </div>
-            <div class="book-info">
-              <h3>1984</h3>
-              <p>George Orwell</p>
-            </div>
-          </div>
-          <div class="book-card">
-            <div class="book-cover">
-              <a href="#"
-                ><img
-                  src="../static/img/brave new world.jpg"
-                  alt="brave new world cover"
-              /></a>
-            </div>
-            <div class="book-info">
-              <h3>Brave New World</h3>
-              <p>Aldous Huxley</p>
+            <div class="book-card-info">
+              <span class="book-category">{{ book.get_category_display }}</span>
+              <h3 class="book-title">{{ book.title }}</h3>
+              <p class="book-reads">
+                <span class="material-icons">visibility</span>
+                {{ book.reads }} reads
+              </p>
             </div>
           </div>
-          <div class="book-card">
-            <div class="book-cover">
-              <a href="#"
-                ><img
-                  src="../static/img/the alchemist.jpg"
-                  alt="the alchemist cover"
-              /></a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WHY READLOOM SECTION ===== -->
+    <section class="why-readloom-section">
+      <div class="container">
+        <div class="section-center">
+          <h2 class="section-title-large">Why ReadLoom?</h2>
+          <p class="section-description">More than just reading – it's an experience designed to keep you engaged</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon seamless">
+              <span class="material-icons">import_contacts</span>
             </div>
-            <div class="book-info">
-              <h3>The Alchemist</h3>
-              <p>Paulo Coelho</p>
+            <h3 class="feature-title">Seamless Reading</h3>
+            <p class="feature-description">Beautiful in-browser reader with progress tracking, bookmarks, and customizable themes.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon gamification">
+              <span class="material-icons">emoji_events</span>
             </div>
+            <h3 class="feature-title">Gamification</h3>
+            <p class="feature-description">Earn badges, maintain streaks, and unlock new books as you progress in your reading journey.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon library">
+              <span class="material-icons">collections_bookmark</span>
+            </div>
+            <h3 class="feature-title">Personal Library</h3>
+            <p class="feature-description">Organize your books into custom shelves and get personalized recommendations.</p>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- ===== CTA SECTION ===== -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to Start Your Journey?</h2>
+          <p class="cta-subtitle">Join thousands of readers who have discovered the joy of reading with ReadLoom.</p>
+          <div class="cta-buttons">
+            <a href="{% url 'browse_books' %}" class="btn-primary">Browse Books</a>
+            {% if not user.is_authenticated or user.user_type != 'author' %}
+              <a href="{% url 'register' %}" class="btn-outline">Become an Author</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <p class="footer-copyright">© 2024 ReadLoom. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#privacy">Privacy</a>
+            <a href="#terms">Terms</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
