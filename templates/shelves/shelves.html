@@ -1,22 +1,145 @@
-{% extends 'authentication/base.html' %}
-{% block content %}
+{% extends 'authentication/base.html' %} {% load static %} {% block content %}
 
-<h2>My Shelves</h2>
-
-{% for shelf in shelves %}
-<div class="shelf">
-    <h3>{{ shelf.name }}</h3>
-
-    <div class="book-grid">
-        {% for book in shelf.books.all %}
-        <div class="book-card">
-            <img src="{{ book.cover.url }}">
-            <h4>{{ book.title }}</h4>
-            <p>{{ book.author }}</p>
-        </div>
-        {% endfor %}
+<div class="shelves-wrapper">
+  <!-- ================= LEFT: SHELVES LIST ================= -->
+  <div class="shelves-left">
+    <div class="shelves-header">
+      <h2>My Shelves</h2>
+      <button class="create-shelf-btn" onclick="openShelfModal()">
+        + Create Shelf
+      </button>
     </div>
-</div>
-{% endfor %}
 
+    <ul class="shelf-list" id="shelfList">
+      {% for shelf in shelves %}
+      <li data-shelf-id="{{ shelf.id }}">
+        <span onclick="loadShelf({{ shelf.id }})"> {{ shelf.name }} </span>
+
+        <button
+          class="delete-shelf-btn"
+          onclick="deleteShelf(event, {{ shelf.id }})"
+          title="Delete shelf"
+        >
+          🗑
+        </button>
+      </li>
+      {% empty %}
+      <li class="empty-shelf">No shelves yet</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- ================= RIGHT: BOOKS (SAME GRID) ================= -->
+  <div class="shelves-right">
+    <h2 id="shelfTitle">Select a shelf</h2>
+
+    <!-- 🔥 SAME CLASS AS BROWSE PAGE -->
+    <div class="book-grid" id="booksGrid">
+      <!-- Books will load dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ================= CREATE SHELF MODAL ================= -->
+<div id="shelfModal" class="modal">
+  <div class="modal-content">
+    <h3>Create New Shelf</h3>
+    <input type="text" id="shelfName" placeholder="Shelf name" />
+    <button onclick="createShelf()">Create</button>
+    <button onclick="closeShelfModal()">Cancel</button>
+  </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<script>
+  function openShelfModal() {
+    document.getElementById("shelfModal").style.display = "block";
+  }
+
+  function closeShelfModal() {
+    document.getElementById("shelfModal").style.display = "none";
+  }
+
+  function createShelf() {
+    const name = document.getElementById("shelfName").value.trim();
+    if (!name) return alert("Shelf name required");
+
+    fetch("{% url 'create_shelf' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "name=" + encodeURIComponent(name),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) return alert(data.error);
+
+        const li = document.createElement("li");
+        li.textContent = data.name;
+        li.onclick = () => loadShelf(data.id);
+        document.getElementById("shelfList").appendChild(li);
+
+        closeShelfModal();
+        document.getElementById("shelfName").value = "";
+      });
+  }
+
+  function loadShelf(id) {
+    fetch(`/shelves/${id}/books/`)
+      .then((res) => res.json())
+      .then((data) => {
+        document.getElementById("shelfTitle").textContent = data.shelf;
+
+        const grid = document.getElementById("booksGrid");
+        grid.innerHTML = "";
+
+        if (!data.books.length) {
+          grid.innerHTML = "<p>No books in this shelf.</p>";
+          return;
+        }
+
+        data.books.forEach((book) => {
+          const a = document.createElement("a");
+          a.href = `/books/${book.slug}/`;
+          a.className = "card-link";
+
+          a.innerHTML = `
+          <div class="book-card">
+            <img src="${book.cover}">
+            <h4>${book.title}</h4>
+            <p>${book.author}</p>
+          </div>
+        `;
+
+          grid.appendChild(a);
+        });
+      });
+  }
+
+  function deleteShelf(event, shelfId) {
+    event.stopPropagation();
+
+    if (!confirm("Delete this shelf? This cannot be undone.")) return;
+
+    fetch(`/shelves/${shelfId}/delete/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          const li = document.querySelector(`li[data-shelf-id="${shelfId}"]`);
+          if (li) li.remove();
+
+          // Clear right panel
+          document.getElementById("shelfTitle").textContent = "Select a shelf";
+          document.getElementById("booksGrid").innerHTML = "";
+        }
+      });
+  }
+</script>
 {% endblock %}

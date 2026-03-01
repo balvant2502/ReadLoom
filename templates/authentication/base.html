@@ -18,9 +18,12 @@
 
   <body>
     <div class="container">
+
       <!-- ================= MOBILE NAV BAR ================= -->
       <nav class="mobile-navbar">
         <h2 class="mobile-logo">ReadLoom</h2>
+
+        {% if user.is_authenticated %}
         <button
           class="hamburger"
           id="hamburgerBtn"
@@ -30,8 +33,10 @@
           <span></span>
           <span></span>
         </button>
+        {% endif %}
       </nav>
 
+      {% if user.is_authenticated %}
       <!-- ================= SIDEBAR OVERLAY (Mobile) ================= -->
       <div
         class="sidebar-overlay"
@@ -73,6 +78,15 @@
           >
             Search
           </a>
+
+          {% if user.user_type == 'reader' %}
+          <a
+            href="{% url 'shelves' %}"
+            class="{% if request.path == '/shelves/' %}active{% endif %}"
+          >
+            Shelves
+          </a>
+          {% endif %}
         </nav>
 
         <!-- USER SECTION -->
@@ -82,22 +96,32 @@
           style="cursor: pointer"
         >
           <button type="button" class="user-link">{{ user.first_name }}</button>
-          <small>{% if user.user_type == 'author' %}author{% else %}reader{% endif %}</small>
+          <small>
+            {% if user.user_type == 'author' %}
+              author
+            {% else %}
+              reader
+            {% endif %}
+          </small>
         </div>
       </aside>
       <!-- ================= END SIDEBAR ================= -->
+      {% endif %}
 
+      {% if user.is_authenticated %}
       <!-- ================= PROFILE SLIDE MENU ================= -->
       <div id="profileMenu" class="profile-menu">
         <div class="profile-header">
           <h3>{{ user.first_name }}</h3>
-          <span>{% if user.user_type == 'author' %}Author{% else %}Reader{% endif %}</span>
+          <span>
+            {% if user.user_type == 'author' %}
+              Author
+            {% else %}
+              Reader
+            {% endif %}
+          </span>
         </div>
 
-        <a href="#">
-          <span class="material-icons">person</span>
-          View Profile
-        </a>
 
         <a href="{% url 'profile_update' %}">
           <span class="material-icons">edit</span>
@@ -110,9 +134,13 @@
         </a>
       </div>
       <!-- ================= END PROFILE MENU ================= -->
+      {% endif %}
 
       <!-- ================= MAIN CONTENT ================= -->
-      <main class="content">{% block content %}{% endblock %}</main>
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+
     </div>
 
     <!-- ================= JAVASCRIPT ================= -->
@@ -120,11 +148,12 @@
       let menuOpen = false;
       let mobileMenuOpen = false;
 
-      // Mobile Sidebar Toggle
       function toggleMobileSidebar() {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebarOverlay");
         const hamburger = document.getElementById("hamburgerBtn");
+
+        if (!sidebar) return;
 
         sidebar.classList.toggle("active");
         overlay.classList.toggle("active");
@@ -137,60 +166,48 @@
         const overlay = document.getElementById("sidebarOverlay");
         const hamburger = document.getElementById("hamburgerBtn");
 
+        if (!sidebar) return;
+
         sidebar.classList.remove("active");
         overlay.classList.remove("active");
         hamburger.classList.remove("active");
         mobileMenuOpen = false;
       }
 
-      // Close mobile sidebar when a link is clicked
-      document.querySelectorAll(".sidebar nav a").forEach((link) => {
-        link.addEventListener("click", closeMobileSidebar);
-      });
+      const sidebarLinks = document.querySelectorAll(".sidebar nav a");
+      if (sidebarLinks.length) {
+        sidebarLinks.forEach((link) => {
+          link.addEventListener("click", closeMobileSidebar);
+        });
+      }
 
       function toggleProfileMenu(event) {
         event.preventDefault();
         event.stopPropagation();
 
         const menu = document.getElementById("profileMenu");
+        if (!menu) return;
 
-        // small delay prevents click-through
         setTimeout(() => {
           menu.classList.toggle("active");
           menuOpen = menu.classList.contains("active");
         }, 10);
       }
 
-      // stop clicks inside menu from closing or triggering parent
-      document
-        .getElementById("profileMenu")
-        .addEventListener("click", function (e) {
+      const profileMenu = document.getElementById("profileMenu");
+      if (profileMenu) {
+        profileMenu.addEventListener("click", function (e) {
           e.stopPropagation();
         });
+      }
 
-      // close when clicking anywhere else
       document.addEventListener("click", function () {
-        if (menuOpen) {
-          document.getElementById("profileMenu").classList.remove("active");
+        if (menuOpen && profileMenu) {
+          profileMenu.classList.remove("active");
           menuOpen = false;
         }
       });
-
-      // for ajax search
-      const input = document.getElementById("searchInput");
-      const form = document.getElementById("searchForm");
-
-      let timer = null;
-
-      if (input && form) {
-        input.addEventListener("input", function () {
-          clearTimeout(timer);
-
-          timer = setTimeout(() => {
-            form.submit(); // calls YOUR browse_books view
-          }, 500); // wait while user typing
-        });
-      }
     </script>
   </body>
 </html>
+{% block extra_js %}{% endblock %}

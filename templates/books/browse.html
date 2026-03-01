@@ -3,99 +3,155 @@
 
 <!-- ================= SEARCH + FILTER ================= -->
 
-<form method="GET" id="searchForm" class="browse-top">
+<form method="GET"
+      id="searchForm"
+      class="browse-top"
+      action="{% url 'browse_books' %}">
 
-    <!-- SEARCH -->
-    <div class="search-bar">
-        <input type="text"
-               id="searchInput"
-               name="q"
-               placeholder="Search by title, author, description"
-               value="{{ request.GET.q }}">
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <input
+      type="text"
+      id="searchInput"
+      name="q"
+      placeholder="Search by title, author, description"
+      value="{{ request.GET.q }}"
+    />
 
-        <button type="submit">
-            <span class="material-icons">search</span>
-        </button>
-    </div>
+    <button type="submit">
+      <span class="material-icons">search</span>
+    </button>
+  </div>
 
-    <!-- CATEGORY FILTER -->
-    <div class="filter">
-        <select name="category" onchange="document.getElementById('searchForm').submit()">
-            <option value="">All Categories</option>
+  <!-- CATEGORY FILTER -->
+  <div class="filter">
+    <select name="category" onchange="document.getElementById('searchForm').submit()">
+      <option value="">All Categories</option>
 
-            {% for value,label in categories %}
-                <option value="{{ value }}"
-                {% if request.GET.category == value %}selected{% endif %}>
-                    {{ label }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
+      {% for value,label in categories %}
+        <option value="{{ value }}"
+          {% if request.GET.category == value %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
 
 </form>
 
+<!-- ================= BOOKS CONTAINER (AJAX TARGET) ================= -->
 
-<!-- ================= DEFAULT MODE ================= -->
+<div id="books-container">
 
 {% if not is_search %}
 
 <h2>Trending</h2>
 
 <div class="book-grid">
-{% for book in trending_books %}
-<a href="{% url 'book_detail' book.slug %}" class="card-link">
+  {% for book in trending_books %}
+  <a href="{% url 'book_detail' book.slug %}" class="card-link">
     <div class="book-card">
-        <img src="{{ book.cover_image.url }}">
-        <h4>{{ book.title }}</h4>
-        <p>{{ book.author.first_name }}</p>
+      <img src="{{ book.cover_image.url }}" />
+      <h4>{{ book.title }}</h4>
+      <p>{{ book.author.first_name }}</p>
     </div>
-</a>
-{% empty %}
-<p>No trending books.</p>
-{% endfor %}
+  </a>
+  {% empty %}
+  <p>No trending books.</p>
+  {% endfor %}
 </div>
-
 
 <h2>Recently Added</h2>
 
 <div class="book-grid">
-{% for book in recent_books %}
-<a href="{% url 'book_detail' book.slug %}" class="card-link">
+  {% for book in recent_books %}
+  <a href="{% url 'book_detail' book.slug %}" class="card-link">
     <div class="book-card">
-        <img src="{{ book.cover_image.url }}">
-        <h4>{{ book.title }}</h4>
-        <p>{{ book.author.first_name }}</p>
+      <img src="{{ book.cover_image.url }}" />
+      <h4>{{ book.title }}</h4>
+      <p>{{ book.author.first_name }}</p>
     </div>
-</a>
-{% empty %}
-<p>No recent books.</p>
-{% endfor %}
+  </a>
+  {% empty %}
+  <p>No recent books.</p>
+  {% endfor %}
+</div>
+
+<h2>Featured</h2>
+
+<div class="book-grid">
+  {% for book in featured_books %}
+  <a href="{% url 'book_detail' book.slug %}" class="card-link">
+    <div class="book-card">
+      <img src="{{ book.cover_image.url }}" />
+      <h4>{{ book.title }}</h4>
+      <p>{{ book.author.first_name }}</p>
+    </div>
+  </a>
+  {% empty %}
+  <p>No featured books.</p>
+  {% endfor %}
 </div>
 
 {% endif %}
-
-
-
-<!-- ================= SEARCH MODE ================= -->
 
 {% if is_search %}
 
 <h2>Search Results</h2>
 
 <div class="book-grid">
-{% for book in search_results %}
-<a href="{% url 'book_detail' book.slug %}" class="card-link">
+  {% for book in search_results %}
+  <a href="{% url 'book_detail' book.slug %}" class="card-link">
     <div class="book-card">
-        <img src="{{ book.cover_image.url }}">
-        <h4>{{ book.title }}</h4>
-        <p>{{ book.author.first_name }}</p>
+      <img src="{{ book.cover_image.url }}" />
+      <h4>{{ book.title }}</h4>
+      <p>{{ book.author.first_name }}</p>
     </div>
-</a>
-{% empty %}
-<p>No books found.</p>
-{% endfor %}
+  </a>
+  {% empty %}
+  <p>No books found.</p>
+  {% endfor %}
 </div>
 
 {% endif %}
 
+</div>
+<!-- ================= END BOOKS CONTAINER ================= -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let timer = null;
+
+const input = document.getElementById("searchInput");
+const form = document.getElementById("searchForm");
+
+if (input && form) {
+  input.addEventListener("input", function () {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      const params = new URLSearchParams(new FormData(form));
+
+      fetch(form.action + "?" + params.toString(), {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+      })
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        const newContent = doc.querySelector("#books-container");
+        const currentContent = document.querySelector("#books-container");
+
+        if (newContent && currentContent) {
+          currentContent.innerHTML = newContent.innerHTML;
+        }
+      })
+      .catch(err => console.error("AJAX search error:", err));
+    }, 400);
+  });
+}
+</script>
 {% endblock %}
