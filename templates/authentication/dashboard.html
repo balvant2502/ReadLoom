@@ -1,7 +1,19 @@
 {% extends 'authentication/base.html' %} {% block content %}
 
+<!-- WELCOME SECTION -->
+<div class="reader-welcome">
+  <span class="label-accent">Loom Reader</span>
+  <h1>{{ user.first_name|default:"Reader" }}</h1>
+  <p class="subtext">Welcome , Manage your reading journey.</p>
+</div>
+
 <!-- CURRENTLY READING -->
-<h2>Currently Reading</h2>
+<div class="section-header">
+  <h2>
+    <span class="material-icons section-icon">auto_stories</span>Currently
+    Reading
+  </h2>
+</div>
 
 <div class="book-grid">
   {% for book in current_books %}
@@ -12,20 +24,17 @@
 
       <h4>{{ book.title }}</h4>
 
-      {% if book.user_progress %} 
-        {% with p=book.user_progress.0 %}
-            <div class="progress-bar">
-                <div
-                    class="progress-fill"
-                    style="width: {{ p.progress|default:0 }}%;"
-                ></div>
-            </div>
-
-            <span>{{ p.progress|floatformat:0 }}</span>
-        {% endwith %} 
-    {% endif %}
-
-      <span class="progress-text">{{ book.progress }}%</span>
+      {% if book.user_progress %} {% with p=book.user_progress.0 %}
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            style="width: {{ p.progress|default:0 }}%;"
+          ></div>
+        </div>
+        <span class="progress-percentage">{{ p.progress|floatformat:0 }}%</span>
+      </div>
+      {% endwith %} {% endif %}
     </div>
   </a>
 
@@ -33,34 +42,61 @@
 </div>
 
 <!-- STREAKS -->
-<h2 class="section-title">Reading Streaks</h2>
+<div class="section-header">
+  <h2 class="section-title">
+    <span class="material-icons section-icon">local_fire_department</span>Your
+    Streak
+  </h2>
+</div>
 
 <div class="stats">
   <div class="stat-box">
-    <h3>🔥 5</h3>
-    <p>Current Streak</p>
+    <div class="stat-icon streak-icon">
+      <span class="material-icons">local_fire_department</span>
+    </div>
+    <h3>5</h3>
+    <p>Days in a Row</p>
   </div>
 
   <div class="stat-box">
-    <h3>⭐ 12</h3>
-    <p>Best Streak</p>
+    <div class="stat-icon best-icon">
+      <span class="material-icons">whatshot</span>
+    </div>
+    <h3>12</h3>
+    <p>Best Record</p>
   </div>
 
   <div class="stat-box">
-    <h3>📚 62</h3>
-    <p>Total Sessions</p>
+    <div class="stat-icon sessions-icon">
+      <span class="material-icons">schedule</span>
+    </div>
+    <h3>62</h3>
+    <p>Reading Time</p>
   </div>
 </div>
 
-<!-- BADGES -->
-<h2 class="section-title">Badges</h2>
+<!-- ACHIEVEMENTS -->
+<div class="section-header">
+  <h2 class="section-title">
+    <span class="material-icons section-icon">grade</span>Achievements
+  </h2>
+</div>
 
 <div class="badges">
-  <div class="badge">Fiction Lover</div>
+  <div class="badge">
+    <span class="material-icons badge-icon">star_rate</span>
+    <span>Avid Reader</span>
+  </div>
 
-  <div class="badge">50 Books Completed</div>
+  <div class="badge">
+    <span class="material-icons badge-icon">auto_awesome</span>
+    <span>50 Books Completed</span>
+  </div>
 
-  <div class="badge">Night Reader</div>
+  <div class="badge">
+    <span class="material-icons badge-icon">trending_up</span>
+    <span>Reading Streak Master</span>
+  </div>
 </div>
 
 {% endblock %}
