@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReadLoom</title>
 
     <!-- Main CSS -->
@@ -17,36 +18,71 @@
 
   <body>
     <div class="container">
+      <!-- ================= MOBILE NAV BAR ================= -->
+      <nav class="mobile-navbar">
+        <h2 class="mobile-logo">ReadLoom</h2>
+        <button
+          class="hamburger"
+          id="hamburgerBtn"
+          onclick="toggleMobileSidebar()"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+
+      <!-- ================= SIDEBAR OVERLAY (Mobile) ================= -->
+      <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+        onclick="closeMobileSidebar()"
+      ></div>
+
       <!-- ================= SIDEBAR ================= -->
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <h2 class="logo">ReadLoom</h2>
 
         <nav>
           <a
-            href="{% url 'dashboard' %}"
-            class="{% if request.path == '/dashboard/' %}active{% endif %}"
+            href="{% url 'home' %}"
+            class="{% if request.path == '/' %}active{% endif %}"
           >
-            Dashboard
+            Home
           </a>
+
+          {% if user.user_type == 'author' %}
+            <a
+              href="{% url 'author_dashboard' %}"
+              class="{% if request.path == '/author/dashboard/' %}active{% endif %}"
+            >
+              Dashboard
+            </a>
+          {% else %}
+            <a
+              href="{% url 'dashboard' %}"
+              class="{% if request.path == '/dashboard/' %}active{% endif %}"
+            >
+              Dashboard
+            </a>
+          {% endif %}
 
           <a
             href="{% url 'browse_books' %}"
             class="{% if request.path == '/browse/' %}active{% endif %}"
           >
-            Browse
+            Search
           </a>
         </nav>
 
         <!-- USER SECTION -->
-        <div class="user">
-          <button
-            type="button"
-            class="user-link"
-            onclick="toggleProfileMenu(event)"
-          >
-            {{ user.first_name }}
-          </button>
-          <small>reader</small>
+        <div
+          class="user"
+          onclick="toggleProfileMenu(event)"
+          style="cursor: pointer"
+        >
+          <button type="button" class="user-link">{{ user.first_name }}</button>
+          <small>{% if user.user_type == 'author' %}author{% else %}reader{% endif %}</small>
         </div>
       </aside>
       <!-- ================= END SIDEBAR ================= -->
@@ -55,7 +91,7 @@
       <div id="profileMenu" class="profile-menu">
         <div class="profile-header">
           <h3>{{ user.first_name }}</h3>
-          <span>Reader</span>
+          <span>{% if user.user_type == 'author' %}Author{% else %}Reader{% endif %}</span>
         </div>
 
         <a href="#">
@@ -82,6 +118,35 @@
     <!-- ================= JAVASCRIPT ================= -->
     <script>
       let menuOpen = false;
+      let mobileMenuOpen = false;
+
+      // Mobile Sidebar Toggle
+      function toggleMobileSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        const hamburger = document.getElementById("hamburgerBtn");
+
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+        hamburger.classList.toggle("active");
+        mobileMenuOpen = sidebar.classList.contains("active");
+      }
+
+      function closeMobileSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        const hamburger = document.getElementById("hamburgerBtn");
+
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+        hamburger.classList.remove("active");
+        mobileMenuOpen = false;
+      }
+
+      // Close mobile sidebar when a link is clicked
+      document.querySelectorAll(".sidebar nav a").forEach((link) => {
+        link.addEventListener("click", closeMobileSidebar);
+      });
 
       function toggleProfileMenu(event) {
         event.preventDefault();
@@ -111,20 +176,21 @@
         }
       });
 
-
       // for ajax search
       const input = document.getElementById("searchInput");
       const form = document.getElementById("searchForm");
 
       let timer = null;
 
-      input.addEventListener("input", function () {
-        clearTimeout(timer);
+      if (input && form) {
+        input.addEventListener("input", function () {
+          clearTimeout(timer);
 
-        timer = setTimeout(() => {
-          form.submit(); // calls YOUR browse_books view
-        }, 500); // wait while user typing
-      });
+          timer = setTimeout(() => {
+            form.submit(); // calls YOUR browse_books view
+          }, 500); // wait while user typing
+        });
+      }
     </script>
   </body>
 </html>

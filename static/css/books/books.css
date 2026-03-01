@@ -120,3 +120,113 @@
     .book-detail-container { padding: 20px; }
 }
 
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-form input,
+    .filter-form select {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
+
+    .book-card {
+        padding: 12px;
+    }
+
+    .book-card img {
+        height: 200px;
+    }
+
+    .book-title {
+        font-size: 1.4rem;
+    }
+
+    .book-stats {
+        flex-direction: column;
+    }
+
+    .stat {
+        width: 100%;
+    }
+
+    .book-tags {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    .page-title {
+        font-size: 1.3rem;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .book-card {
+        padding: 10px;
+    }
+
+    .book-card img {
+        height: 160px;
+    }
+
+    .book-title {
+        font-size: 1.1rem;
+        margin: 0 0 6px 0;
+    }
+
+    .book-sub {
+        font-size: 0.8rem;
+    }
+
+    .book-main {
+        padding: 15px;
+    }
+
+    .author-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .author-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .book-actions {
+        flex-direction: column;
+    }
+}
+
