@@ -1,4 +1,8 @@
-{% extends 'authentication/base.html' %} {% load static %} {% block content %}
+{% extends 'authentication/base.html' %} {% load static %} 
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/shelves/shelves.css' %}" />
 
 <div class="shelves-wrapper">
   <!-- ================= LEFT: SHELVES LIST ================= -->
@@ -40,7 +44,7 @@
   </div>
 </div>
 
-<!-- ================= CREATE SHELF MODAL ================= -->
+<!-- ================= CREATE SHELF MODAL ===== -->
 <div id="shelfModal" class="modal">
   <div class="modal-content">
     <h3>Create New Shelf</h3>
@@ -87,6 +91,14 @@
   }
 
   function loadShelf(id) {
+    // Remove active class from all shelves
+    document.querySelectorAll(".shelf-list li").forEach(li => {
+      li.classList.remove("active");
+    });
+    
+    // Add active class to clicked shelf
+    document.querySelector(`li[data-shelf-id="${id}"]`)?.classList.add("active");
+
     fetch(`/shelves/${id}/books/`)
       .then((res) => res.json())
       .then((data) => {
@@ -96,7 +108,7 @@
         grid.innerHTML = "";
 
         if (!data.books.length) {
-          grid.innerHTML = "<p>No books in this shelf.</p>";
+          grid.innerHTML = '<div class="empty-books-message">No books in this shelf yet. Start adding books to organize your reading collection.</div>';
           return;
         }
 

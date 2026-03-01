@@ -19,9 +19,15 @@ from django.urls import path, include
 from django.shortcuts import render
 from django.conf import settings
 from django.conf.urls.static import static
+from books.models import Book
 
 def home(request):
-    return render(request, 'index.html')
+    # Get top 8 books by number of reads
+    featured_books = Book.objects.all().order_by('-reads')[:8]
+    context = {
+        'featured_books': featured_books
+    }
+    return render(request, 'index.html', context)
 
 urlpatterns = [
     path('', home, name='home'),   

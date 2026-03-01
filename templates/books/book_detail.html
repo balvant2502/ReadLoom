@@ -1,18 +1,19 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}{{ book.title }}{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/books/books.css' %}" />
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block title %}{{ book.title
+}}{%endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/books/book_detail_and_edit.css' %}"
+/>
+{% endblock %} {% block content %}
 
 <div class="book-detail-container">
   <div class="book-main">
     <div class="book-info">
-      <img src="{{ book.cover_image.url }}" class="detail-cover" alt="Cover for {{ book.title }}" />
+      <img
+        src="{{ book.cover_image.url }}"
+        class="detail-cover"
+        alt="Cover for {{ book.title }}"
+      />
 
       <div class="detail-meta">
         <h1 class="book-title">{{ book.title }}</h1>

@@ -18,12 +18,9 @@
 
   <body>
     <div class="container">
-
       <!-- ================= MOBILE NAV BAR ================= -->
       <nav class="mobile-navbar">
         <h2 class="mobile-logo">ReadLoom</h2>
-
-        {% if user.is_authenticated %}
         <button
           class="hamburger"
           id="hamburgerBtn"
@@ -33,7 +30,6 @@
           <span></span>
           <span></span>
         </button>
-        {% endif %}
       </nav>
 
       {% if user.is_authenticated %}
@@ -96,13 +92,7 @@
           style="cursor: pointer"
         >
           <button type="button" class="user-link">{{ user.first_name }}</button>
-          <small>
-            {% if user.user_type == 'author' %}
-              author
-            {% else %}
-              reader
-            {% endif %}
-          </small>
+          <small>{% if user.user_type == 'author' %}author{% else %}reader{% endif %}</small>
         </div>
       </aside>
       <!-- ================= END SIDEBAR ================= -->
@@ -113,13 +103,7 @@
       <div id="profileMenu" class="profile-menu">
         <div class="profile-header">
           <h3>{{ user.first_name }}</h3>
-          <span>
-            {% if user.user_type == 'author' %}
-              Author
-            {% else %}
-              Reader
-            {% endif %}
-          </span>
+          <span>{% if user.user_type == 'author' %}Author{% else %}Reader{% endif %}</span>
         </div>
 
 
@@ -207,6 +191,22 @@
           menuOpen = false;
         }
       });
+
+      // for ajax search
+      const input = document.getElementById("searchInput");
+      const form = document.getElementById("searchForm");
+
+      let timer = null;
+
+      if (input && form) {
+        input.addEventListener("input", function () {
+          clearTimeout(timer);
+
+          timer = setTimeout(() => {
+            form.submit(); // calls YOUR browse_books view
+          }, 500); // wait while user typing
+        });
+      }
     </script>
   </body>
 </html>

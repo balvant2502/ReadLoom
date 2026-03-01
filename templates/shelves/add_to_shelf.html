@@ -1,5 +1,9 @@
 {% extends 'authentication/base.html' %}
+{% load static %}
+
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/shelves/shelves.css' %}" />
 
 <div class="add-shelf-wrapper">
 
@@ -22,14 +26,14 @@
     <div class="shelf-select-list">
       {% for shelf in shelves %}
       <label class="shelf-option">
-        <input type="radio" name="shelf_id" value="{{ shelf.id }}">
-        {{ shelf.name }}
+        <input type="radio" name="shelf_id" value="{{ shelf.id }}" required>
+        <span>{{ shelf.name }}</span>
       </label>
       {% endfor %}
     </div>
 
-    <button type="submit" class="create-shelf-btn">
-      Add to Shelf
+    <button type="submit">
+      Add to Selected Shelf
     </button>
   </form>
 
@@ -37,10 +41,10 @@
   <!-- ================= NO SHELVES ================= -->
   <div class="no-shelf">
     <p>You don’t have any shelves yet.</p>
-    <p>Please create a shelf first.</p>
+    <p>Create a shelf first to organize your books.</p>
 
     <a href="{% url 'shelves' %}" class="create-shelf-btn">
-      Go to Shelves
+      Create Your First Shelf
     </a>
   </div>
   {% endif %}
