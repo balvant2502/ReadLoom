@@ -1,0 +1,54 @@
+{% extends 'authentication/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/shelves/shelves.css' %}" />
+
+<div class="add-shelf-wrapper">
+
+  <h2>Add to Shelf</h2>
+
+  <!-- BOOK INFO (uses SAME card UI) -->
+  <div class="book-grid">
+    <div class="book-card">
+      <img src="{{ book.cover_image.url }}">
+      <h4>{{ book.title }}</h4>
+      <p>{{ book.author.first_name }}</p>
+    </div>
+  </div>
+
+  {% if shelves.exists %}
+  <!-- ================= SHELF SELECTION ================= -->
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="shelf-select-list">
+      {% for shelf in shelves %}
+      <label class="shelf-option">
+        <input type="radio" name="shelf_id" value="{{ shelf.id }}" required>
+        <span>{{ shelf.name }}</span>
+      </label>
+      {% endfor %}
+    </div>
+
+    <button type="submit">
+      Add to Selected Shelf
+    </button>
+  </form>
+
+  {% else %}
+  <!-- ================= NO SHELVES ================= -->
+  <div class="no-shelf">
+    <p>You don’t have any shelves yet.</p>
+    <p>Create a shelf first to organize your books.</p>
+
+    <a href="{% url 'shelves' %}" class="create-shelf-btn">
+      Create Your First Shelf
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from authentication.decorators import role_required
 from .forms import BookForm
 from django.shortcuts import get_object_or_404
-from .models import Book, ReadingProgress
+from .models import Book, ReadingProgress, BookRating
 from django.db.models import Q
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import HttpResponse, Http404, StreamingHttpResponse
@@ -26,7 +26,7 @@ def upload_book(request):
             book.status = 'pending'
             book.save()
 
-            return redirect('author_books')
+            return redirect('author_dashboard')
     else:
         form = BookForm()
 
@@ -36,37 +36,67 @@ def author_books(request):
     return HttpResponse("Author Books Page Working")
 
 
-
-
-@login_required
 def book_detail(request, slug):
-    # Try to get the book first
     try:
         book = Book.objects.get(slug=slug)
     except Book.DoesNotExist:
         raise Http404("Book not found")
-    
-    # Check if book is approved
+
     if book.status != 'approved':
-        # If not approved, show error message
         messages.error(request, "Unapproved books cannot be displayed.")
-        return redirect('author_dashboard')
+        return redirect('book_list')
 
-    # Check if user already read this book
-    already_read = ReadingProgress.objects.filter(
-        user=request.user,
-        book=book
-    ).exists()
+    user_rating = None
 
-    if not already_read:
-        ReadingProgress.objects.create(
+    if request.user.is_authenticated:
+        # reading progress logic (already correct)
+        if not ReadingProgress.objects.filter(user=request.user, book=book).exists():
+            ReadingProgress.objects.create(user=request.user, book=book)
+            book.reads += 1
+            book.save(update_fields=['reads'])
+
+        # ⭐ RATING LOGIC
+        if request.method == "POST" and 'rating' in request.POST:
+            rating_value = int(request.POST['rating'])
+
+            rating_obj, created = BookRating.objects.update_or_create(
+                user=request.user,
+                book=book,
+                defaults={'rating': rating_value}
+            )
+
+            book.update_average_rating()  # 🔥 THIS FIXES 0.0
+
+            return redirect('book_detail', slug=slug)
+
+        user_rating = BookRating.objects.filter(
             user=request.user,
             book=book
-        )
-        book.reads += 1
-        book.save()
-    return render(request, 'books/book_detail.html', {'book': book})
+        ).first()
 
+        completed_count = 0
+
+
+        completed_count = ReadingProgress.objects.filter(
+            user=request.user,
+            is_finished=True
+        ).count()
+
+    if book.is_locked:
+        if not request.user.is_authenticated:
+            locked = True
+        elif completed_count < book.unlock_after_books:
+            locked = True
+        else:
+            locked = False
+    else:
+        locked = False
+
+    return render(request, 'books/book_detail.html', {
+        'book': book,
+        'user_rating': user_rating,
+        'locked': locked
+    })
 
 
 @login_required
@@ -147,11 +177,14 @@ def save_progress(request, slug):
 
     book = get_object_or_404(Book, slug=slug)
 
+    
     # prevent invalid values
     page = min(page, total)
 
+
     progress = (page / total) * 100
     progress = round(progress, 2)
+
 
     obj, created = ReadingProgress.objects.update_or_create(
         user=request.user,
@@ -200,10 +233,12 @@ def browse_books(request):
     # DEFAULT BROWSE MODE
     trending_books = books.order_by('-reads')[:10]
     recent_books = books.order_by('-created_at')[:10]
+    featured_books = books.filter(is_featured=True)[:10]
 
     return render(request, 'books/browse.html', {
         'trending_books': trending_books,
         'recent_books': recent_books,
+        'featured_books': featured_books,
         'is_search': False,
         'categories': Book.CATEGORY_CHOICES
     })

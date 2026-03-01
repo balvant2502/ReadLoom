@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
 from authentication.models import CustomUser
-
+from PyPDF2 import PdfReader
+from django.db.models import Avg
+from readloom import settings
 
 class Book(models.Model):
 
@@ -49,16 +51,39 @@ class Book(models.Model):
 
     is_featured = models.BooleanField(default=False)
     is_locked = models.BooleanField(default=False)
+    unlock_after_books = models.PositiveIntegerField(default=0)
 
     reads = models.IntegerField(default=0)
     average_rating = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    average_rating = models.FloatField(default=0.0)
+
+    def update_average_rating(self):
+        avg = self.ratings.aggregate(avg=Avg('rating'))['avg']
+        self.average_rating = round(avg or 0, 1)
+        self.save(update_fields=['average_rating'])
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+        # Only calculate pages when book is newly uploaded
+        if is_new and self.book_file:
+            try:
+                pdf_path = self.book_file.path
+                reader = PdfReader(pdf_path)
+                self.total_pages = len(reader.pages)
+
+                # update only total_pages (avoid recursion)
+                Book.objects.filter(pk=self.pk).update(
+                    total_pages=self.total_pages
+                )
+
+            except Exception as e:
+                print("PDF page count error:", e)
 
     def __str__(self):
         return self.title
@@ -85,3 +110,16 @@ class ReadingProgress(models.Model):
 
     def __str__(self):
         return f"{self.user} → {self.book} ({self.progress:.1f}%)"
+    
+
+class BookRating(models.Model):
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()  # 1–5 stars
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('book', 'user')  # one rating per user per book
+
+    def __str__(self):
+        return f"{self.book.title} - {self.rating}★"

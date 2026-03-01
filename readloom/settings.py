@@ -50,7 +50,6 @@ INSTALLED_APPS = [
 
     'authentication',
     'books',
-    'gamification',
     'shelves'
     
 ]
@@ -143,3 +142,8 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+  # The URL where users are redirected to log in
+LOGIN_URL = '/authentication/login/'
+
+

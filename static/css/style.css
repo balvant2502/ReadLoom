@@ -1179,3 +1179,115 @@ body {
         gap: 8px;
     }
 }
+
+/* ================= SHELVES LAYOUT ================= */
+
+.shelves-wrapper {
+  display: flex;
+  gap: 30px;
+}
+
+/* LEFT PANEL */
+.shelves-left {
+  width: 220px;
+}
+
+.shelves-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-shelf-btn {
+  background: maroon;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* SHELF LIST */
+.shelf-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.shelf-list li {
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.shelf-list li:hover {
+  background: rgba(128, 0, 0, 0.15);
+}
+
+.empty-shelf {
+  opacity: 0.6;
+}
+
+/* RIGHT PANEL */
+.shelves-right {
+  flex: 1;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+
+.modal-content {
+  background: #1f1f1f;
+  color: white;
+  width: 320px;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+
+/* ================= ADD TO SHELF PAGE ================= */
+
+.add-shelf-wrapper {
+  max-width: 600px;
+}
+
+.shelf-select-list {
+  margin: 20px 0;
+}
+
+.shelf-option {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.no-shelf {
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+/* Delete shelf button */
+.delete-shelf-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  float: right;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.delete-shelf-btn:hover {
+  opacity: 1;
+}

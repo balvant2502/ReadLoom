@@ -18,10 +18,7 @@
       <div class="detail-meta">
         <h1 class="book-title">{{ book.title }}</h1>
         <p class="book-sub">
-          by
-          <strong
-            >{{ book.author.first_name|default:book.author.email }}</strong
-          >
+          by <strong>{{ book.author.first_name|default:book.author.email }}</strong>
         </p>
 
         <div class="book-tags">
@@ -30,21 +27,83 @@
         </div>
 
         <p class="book-description">{{ book.description }}</p>
+
+        <!-- ⭐ AVERAGE RATING (ALREADY EXISTS) -->
+        <p class="book-rating">
+          ⭐ {{ book.average_rating|floatformat:1 }} / 5
+        </p>
+
+        <!-- ⭐ USER RATING (NEW – SAFE ADDITION) -->
+        {% if user.is_authenticated and user.user_type == 'reader' %}
+        <form method="POST" class="rating-form">
+          {% csrf_token %}
+
+          <label class="rating-label">
+            {% if user_rating %}
+              Your Rating:
+            {% else %}
+              Rate this book:
+            {% endif %}
+          </label>
+
+          <div class="rating-stars">
+            {% for i in "54321" %}
+              <input type="radio"
+                     id="star{{ i }}"
+                     name="rating"
+                     value="{{ i }}"
+                     {% if user_rating and user_rating.rating == i|add:"0" %}
+                        checked
+                     {% endif %}
+                     onchange="this.form.submit()">
+              <label for="star{{ i }}">★</label>
+            {% endfor %}
+          </div>
+        </form>
+        {% endif %}
+
       </div>
     </div>
 
     <div class="book-actions">
-      <a href="{% url 'book_reader' book.slug %}" class="btn-primary"
-        >Read / Open</a
-      >
-      <a href="#" class="btn-secondary">Add to Shelf</a>
-      <a href="#" class="btn-ghost">Report</a>
+      {% if locked %}
+        <div class="lock-box">
+          <span class="material-icons lock-icon">lock</span>
+            <p>
+              Unlock by completing
+              <strong>{{ book.unlock_after_books }}</strong> books
+            </p>
+
+          {% if user.is_authenticated %}
+            <p class="progress">
+              You have completed {{ completed_count }} books
+            </p>
+          {% else %}
+            <button onclick="openAuthModal()" class="btn-primary">
+              Login to Unlock
+            </button>
+          {% endif %}
+        </div>
+      {% else %}
+        <a href="{% url 'book_reader' book.slug %}" class="btn-primary">
+          Read
+        </a>
+      {% endif %}
+
+      {% if user.user_type == 'reader' %}
+        <a href="{% url 'add_to_shelf' book.slug %}" class="btn-secondary">
+          Add to Shelf
+        </a>
+      {% endif %}
     </div>
   </div>
 
   <aside class="book-side">
     <div class="author-card">
-      <div class="author-avatar">{{ book.author.first_name|first|upper }}</div>
+      <div class="author-avatar">
+        {{ book.author.first_name|first|upper }}
+      </div>
+
       <div class="author-info">
         <p class="author-name">
           {{ book.author.first_name|default:book.author.email }}
@@ -60,10 +119,14 @@
         <div class="stat-value">{{ book.total_pages|default:"—" }}</div>
         <div class="stat-label">Pages</div>
       </div>
+
       <div class="stat">
-        <div class="stat-value">{{ book.average_rating|floatformat:1 }}</div>
+        <div class="stat-value">
+          {{ book.average_rating|floatformat:1 }}
+        </div>
         <div class="stat-label">Rating</div>
       </div>
+
       <div class="stat">
         <div class="stat-value">{{ book.reads }}</div>
         <div class="stat-label">Reads</div>
@@ -72,4 +135,34 @@
   </aside>
 </div>
 
+<!-- 🔒 LOGIN REQUIRED MODAL -->
+<div id="authModal" class="modal">
+  <div class="modal-content">
+    <h2>Login Required</h2>
+    <p>To read this book, you need to create an account or login.</p>
+
+    <div class="modal-actions">
+      <a href="{% url 'login' %}?next={% url 'book_reader' book.slug %}" class="btn primary">
+        Login
+      </a>
+      <a href="{% url 'register' %}" class="btn secondary">
+        Register
+      </a>
+    </div>
+
+    <button class="close-btn" onclick="closeAuthModal()">✖</button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openAuthModal() {
+    document.getElementById("authModal").style.display = "block";
+}
+function closeAuthModal() {
+    document.getElementById("authModal").style.display = "none";
+}
+</script>
 {% endblock %}
