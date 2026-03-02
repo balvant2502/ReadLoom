@@ -63,28 +63,28 @@
         <nav>
           <a
             href="{% url 'home' %}"
-            class="{% if request.path == '/' %}active{% endif %}"
+            class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}"
           >
             Home
           </a>
 
           <a
             href="{% url 'author_dashboard' %}"
-            class="{% if request.path == '/author/dashboard/' %}active{% endif %}"
+            class="{% if request.resolver_match.url_name == 'author_dashboard' %}active{% endif %}"
           >
             Dashboard
           </a>
 
           <a
             href="{% url 'browse_books' %}"
-            class="{% if request.path == '/browse/' %}active{% endif %}"
+            class="{% if request.resolver_match.url_name == 'browse_books' %}active{% endif %}"
           >
             Search
           </a>
 
           <a
             href="{% url 'upload_book' %}"
-            class="{% if request.path == '/author/upload/' %}active{% endif %}"
+            class="{% if request.resolver_match.url_name == 'upload_book' %}active{% endif %}"
           >
             Upload Book
           </a>

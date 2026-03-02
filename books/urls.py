@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     path('upload/', views.upload_book, name='upload_book'),
-    path('my-books/', views.author_books, name='author_books'),
     path('browse/', views.browse_books, name='browse_books'),
 
     #  STREAM & READER MUST COME BEFORE <slug>

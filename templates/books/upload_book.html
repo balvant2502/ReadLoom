@@ -1,10 +1,11 @@
-{% extends "base.html" %}
+{% extends "authentication/reader_base.html" %}
 {% load static %}
 
 {% block title %}Upload Book{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/books/upload_book.css' %}"}
+
+<link rel="stylesheet" href="{% static 'css/books/upload_book.css' %}">
 
 <div class="upload-container">
     <div class="auth-card">
@@ -16,59 +17,48 @@
         <form method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
-            <!-- TITLE -->
             <div class="form-group">
-                <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                <label>{{ form.title.label }}</label>
                 {{ form.title }}
                 {% if form.title.errors %}
                     <span class="error-text">{{ form.title.errors|striptags }}</span>
                 {% endif %}
             </div>
 
-            <!-- DESCRIPTION -->
             <div class="form-group">
-                <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                <label>{{ form.description.label }}</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                     <span class="error-text">{{ form.description.errors|striptags }}</span>
                 {% endif %}
             </div>
 
-            <!-- CATEGORY -->
             <div class="form-group">
-                <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+                <label>{{ form.category.label }}</label>
                 {{ form.category }}
                 {% if form.category.errors %}
                     <span class="error-text">{{ form.category.errors|striptags }}</span>
                 {% endif %}
             </div>
 
-            <!-- BOOK FILE -->
             <div class="form-group">
-                <label for="{{ form.book_file.id_for_label }}">{{ form.book_file.label }}</label>
+                <label>{{ form.book_file.label }}</label>
                 <div class="file-input-wrapper">
                     {{ form.book_file }}
-                    <label for="{{ form.book_file.id_for_label }}" class="file-input-label">
+                    <label class="file-input-label">
                         <span id="book-file-name">Choose PDF file</span>
                     </label>
                 </div>
-                {% if form.book_file.errors %}
-                    <span class="error-text">{{ form.book_file.errors|striptags }}</span>
-                {% endif %}
             </div>
 
-            <!-- COVER IMAGE -->
             <div class="form-group">
-                <label for="{{ form.cover_image.id_for_label }}">{{ form.cover_image.label }}</label>
+                <label>{{ form.cover_image.label }}</label>
                 <div class="file-input-wrapper">
                     {{ form.cover_image }}
-                    <label for="{{ form.cover_image.id_for_label }}" class="file-input-label">
+                    <label class="file-input-label">
                         <span id="cover-image-name">Choose cover image</span>
                     </label>
                 </div>
-                {% if form.cover_image.errors %}
-                    <span class="error-text">{{ form.cover_image.errors|striptags }}</span>
-                {% endif %}
             </div>
 
             <button type="submit" class="btn-primary">Upload Book</button>
@@ -77,15 +67,15 @@
 </div>
 
 <script>
-    // Update file label with selected filename
-    document.getElementById('id_book_file').addEventListener('change', function(e) {
-        const filename = e.target.files[0]?.name || 'Choose PDF file';
-        document.getElementById('book-file-name').textContent = filename;
-    });
+document.getElementById('id_book_file')?.addEventListener('change', e => {
+  document.getElementById('book-file-name').textContent =
+    e.target.files[0]?.name || 'Choose PDF file';
+});
 
-    document.getElementById('id_cover_image').addEventListener('change', function(e) {
-        const filename = e.target.files[0]?.name || 'Choose cover image';
-        document.getElementById('cover-image-name').textContent = filename;
-    });
+document.getElementById('id_cover_image')?.addEventListener('change', e => {
+  document.getElementById('cover-image-name').textContent =
+    e.target.files[0]?.name || 'Choose cover image';
+});
 </script>
+
 {% endblock %}

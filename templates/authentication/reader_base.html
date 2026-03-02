@@ -82,6 +82,13 @@
           >
             Shelves
           </a>
+          {% elif user.user_type == 'author' %}
+          <a
+            href="{% url 'upload_book' %}"
+            class="{% if request.path == '/books/upload/' %}active{% endif %}"
+          >
+            Upload Book
+          </a>
           {% endif %}
         </nav>
 

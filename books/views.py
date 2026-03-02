@@ -32,8 +32,7 @@ def upload_book(request):
 
     return render(request, 'books/upload_book.html', {'form': form})
 
-def author_books(request):
-    return HttpResponse("Author Books Page Working")
+
 
 
 def book_detail(request, slug):
@@ -47,7 +46,7 @@ def book_detail(request, slug):
         return redirect('book_list')
 
     user_rating = None
-
+    locked = False
     if request.user.is_authenticated:
         # reading progress logic (already correct)
         if not ReadingProgress.objects.filter(user=request.user, book=book).exists():
@@ -74,28 +73,24 @@ def book_detail(request, slug):
             book=book
         ).first()
 
+        # Book unlock feature logic
         completed_count = 0
-
-
         completed_count = ReadingProgress.objects.filter(
             user=request.user,
             is_finished=True
         ).count()
 
-    if book.is_locked:
-        if not request.user.is_authenticated:
-            locked = True
-        elif completed_count < book.unlock_after_books:
+        if completed_count < book.unlock_after_books and request.user.user_type == 'reader':
             locked = True
         else:
             locked = False
     else:
-        locked = False
-
+        locked = True
     return render(request, 'books/book_detail.html', {
         'book': book,
         'user_rating': user_rating,
-        'locked': locked
+        'locked': locked,
+        'completed_count': completed_count
     })
 
 
@@ -231,9 +226,18 @@ def browse_books(request):
         })
 
     # DEFAULT BROWSE MODE
-    trending_books = books.order_by('-reads')[:10]
-    recent_books = books.order_by('-created_at')[:10]
-    featured_books = books.filter(is_featured=True)[:10]
+    trending_books = Book.objects.filter(
+        status='approved',
+        is_featured=False
+    ).order_by('-reads')[:10]
+    recent_books = Book.objects.filter(
+        status='approved',
+        is_featured=False
+    ).order_by('-created_at')[:10]
+    featured_books = Book.objects.filter(
+        status='approved',
+        is_featured=True
+    ).order_by('-created_at')[:10]
 
     return render(request, 'books/browse.html', {
         'trending_books': trending_books,

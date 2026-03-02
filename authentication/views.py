@@ -117,13 +117,5 @@ def profile_update_view(request):
     return render(request, 'authentication/profile_update.html', {'form': form})
 
 
-def profile_view(request, first_name):
-    user = request.user
-    if user.first_name != first_name:
-        messages.error(request, "You can only view your own profile.")
-        return redirect_by_role(user)
-    
-
-    return render(request, 'authentication/view_profile.html', {'user': user})
 
         

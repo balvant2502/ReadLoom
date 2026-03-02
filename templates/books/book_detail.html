@@ -66,36 +66,51 @@
     </div>
 
     <div class="book-actions">
-      {% if locked %}
-        <div class="lock-box">
-          <span class="material-icons lock-icon">lock</span>
-            <p>
-              Unlock by completing
-              <strong>{{ book.unlock_after_books }}</strong> books
-            </p>
 
-          {% if user.is_authenticated %}
-            <p class="progress">
-              You have completed {{ completed_count }} books
-            </p>
-          {% else %}
-            <button onclick="openAuthModal()" class="btn-primary">
-              Login to Unlock
-            </button>
-          {% endif %}
-        </div>
+  {% if locked %}
+    <div class="lock-box">
+      <span class="material-icons lock-icon">lock</span>
+      <p>
+        Unlock by completing
+        <strong>{{ book.unlock_after_books }}</strong> books
+      </p>
+
+      {% if user.is_authenticated %}
+        <p class="progress">
+          You have completed {{ completed_count }} books
+        </p>
       {% else %}
-        <a href="{% url 'book_reader' book.slug %}" class="btn-primary">
-          Read
-        </a>
-      {% endif %}
-
-      {% if user.user_type == 'reader' %}
-        <a href="{% url 'add_to_shelf' book.slug %}" class="btn-secondary">
-          Add to Shelf
-        </a>
+        <button type="button"
+                onclick="openAuthModal()"
+                class="btn-primary">
+          Login to Unlock
+        </button>
       {% endif %}
     </div>
+
+  {% else %}
+    {% if user.is_authenticated %}
+      <!-- ✅ SAFE REAL LINK -->
+      <a href="{% url 'book_reader' book.slug %}" class="btn-primary">
+        Read
+      </a>
+    {% else %}
+      <!-- 🚫 NO href → MODAL ONLY -->
+      <button type="button"
+              onclick="openAuthModal()"
+              class="btn-primary">
+        Read
+      </button>
+    {% endif %}
+  {% endif %}
+
+  {% if user.is_authenticated and user.user_type == 'reader' %}
+    <a href="{% url 'add_to_shelf' book.slug %}" class="btn-secondary">
+      Add to Shelf
+    </a>
+  {% endif %}
+
+</div>
   </div>
 
   <aside class="book-side">
