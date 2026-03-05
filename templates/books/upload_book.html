@@ -1,4 +1,4 @@
-{% extends "authentication/reader_base.html" %}
+{% extends "authentication/base.html" %}
 {% load static %}
 
 {% block title %}Upload Book{% endblock %}
@@ -42,20 +42,20 @@
             </div>
 
             <div class="form-group">
-                <label>{{ form.book_file.label }}</label>
+                {{ form.book_file }}
                 <div class="file-input-wrapper">
                     {{ form.book_file }}
-                    <label class="file-input-label">
+                    <label for="{{ form.book_file.id_for_label }}" class="file-input-label">
                         <span id="book-file-name">Choose PDF file</span>
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>{{ form.cover_image.label }}</label>
+                
                 <div class="file-input-wrapper">
                     {{ form.cover_image }}
-                    <label class="file-input-label">
+                    <label for="{{ form.cover_image.id_for_label }}" class="file-input-label">
                         <span id="cover-image-name">Choose cover image</span>
                     </label>
                 </div>

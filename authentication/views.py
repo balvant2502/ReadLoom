@@ -63,7 +63,7 @@ def user_dashboard_view(request):
         )
     ).distinct()
 
-    return render(request, 'authentication/dashboard.html', {'current_books': current_books})
+    return render(request, 'authentication/reader_dashboard.html', {'current_books': current_books})
 
 @login_required
 @role_required('author')
