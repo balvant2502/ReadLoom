@@ -1,8 +1,11 @@
-{% extends "authentication/base.html" %}
-
-{% block title %}Author Dashboard{% endblock %}
-
-{% block content %}
+{% extends "authentication/base.html" %} {% block title %}Author
+Dashboard{%endblock %} {% block content %} {% if messages %}
+<div class="messages-container">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
 
 <div class="author-welcome">
   <span class="label-accent">Loom Author</span>
@@ -43,50 +46,48 @@
       </tr>
     </thead>
 
-```
-<tbody>
-  {% for book in books %}
-  <tr>
-    <td class="book-title">
-      <a href="{% url 'book_detail' book.slug %}" class="book-title-link">
-        {{ book.title }}
-      </a>
-    </td>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td class="book-title">
+          <a href="{% url 'book_detail' book.slug %}" class="book-title-link">
+            {{ book.title }}
+          </a>
+        </td>
 
-    <td class="reading-count">{{ book.reads }}</td>
+        <td class="reading-count">{{ book.reads }}</td>
 
-    <td>
-      <span class="status-badge status-{{ book.status }}">
-        {{ book.status|title }}
-      </span>
-    </td>
+        <td>
+          <span class="status-badge status-{{ book.status }}">
+            {{ book.status|title }}
+          </span>
+        </td>
 
-    <td class="management-cell">
-      <div class="action-links">
+        <td class="management-cell">
+          <div class="action-links">
+            <a href="{% url 'edit_book' book.slug %}" class="link-edit">
+              Edit Details
+            </a>
 
-        <a href="{% url 'edit_book' book.slug %}" class="link-edit">
-          Edit Details
-        </a>
+            <form
+              action="{% url 'delete_book' book.slug %}"
+              method="POST"
+              style="display: inline"
+              onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');"
+            >
+              {% csrf_token %}
+              <button type="submit" class="link-delete">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
 
-        <form action="{% url 'delete_book' book.slug %}" method="POST" style="display:inline">
-          {% csrf_token %}
-          <button type="submit" class="link-delete">
-            Delete
-          </button>
-        </form>
-
-      </div>
-    </td>
-  </tr>
-
-  {% empty %}
-  <tr>
-    <td colspan="4">You have not uploaded any books yet.</td>
-  </tr>
-  {% endfor %}
-</tbody>
-```
-
+      {% empty %}
+      <tr>
+        <td colspan="4">You have not uploaded any books yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </section>
 

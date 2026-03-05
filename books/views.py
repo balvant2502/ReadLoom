@@ -36,6 +36,7 @@ def upload_book(request):
 
 
 def book_detail(request, slug):
+    completed_count = 0
     try:
         book = Book.objects.get(slug=slug)
     except Book.DoesNotExist:
@@ -43,7 +44,7 @@ def book_detail(request, slug):
 
     if book.status != 'approved':
         messages.error(request, "Unapproved books cannot be displayed.")
-        return redirect('book_list')
+        return redirect('author_dashboard')
 
     user_rating = None
     locked = False
@@ -74,7 +75,7 @@ def book_detail(request, slug):
         ).first()
 
         # Book unlock feature logic
-        completed_count = 0
+        
         completed_count = ReadingProgress.objects.filter(
             user=request.user,
             is_finished=True

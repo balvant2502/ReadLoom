@@ -19,7 +19,7 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
-    
+
     <link
       rel="stylesheet"
       href="{% static 'css/authentication/author_dashboard.css' %}"
@@ -63,19 +63,19 @@
           </a>
 
           {% if user.user_type == 'author' %}
-            <a
-              href="{% url 'author_dashboard' %}"
-              class="{% if request.path == '/author/dashboard/' %}active{% endif %}"
-            >
-              Dashboard
-            </a>
+          <a
+            href="{% url 'author_dashboard' %}"
+            class="{% if request.path == '/author/dashboard/' %}active{% endif %}"
+          >
+            Dashboard
+          </a>
           {% else %}
-            <a
-              href="{% url 'dashboard' %}"
-              class="{% if request.path == '/dashboard/' %}active{% endif %}"
-            >
-              Dashboard
-            </a>
+          <a
+            href="{% url 'dashboard' %}"
+            class="{% if request.path == '/dashboard/' %}active{% endif %}"
+          >
+            Dashboard
+          </a>
           {% endif %}
 
           <a
@@ -102,7 +102,7 @@
           {% endif %}
         </nav>
 
-        <!-- USER SECTION -->
+      <!-- USER SECTION -->
         <div
           class="user"
           onclick="toggleProfileMenu(event)"
@@ -138,10 +138,7 @@
       {% endif %}
 
       <!-- ================= MAIN CONTENT ================= -->
-      <main class="content">
-        {% block content %}{% endblock %}
-      </main>
-
+      <main class="content">{% block content %}{% endblock %}</main>
     </div>
 
     <!-- ================= JAVASCRIPT ================= -->
@@ -220,7 +217,7 @@
           clearTimeout(timer);
 
           timer = setTimeout(() => {
-            form.submit(); // calls YOUR browse_books view
+            form.submit(); // calls  browse_books view
           }, 500); // wait while user typing
         });
       }
