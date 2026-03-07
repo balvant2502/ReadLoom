@@ -12,6 +12,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
 from django.contrib import messages
+from datetime import date, timedelta
+from .models import ReadingStreak
+from authentication.models import CustomUser
 
 @login_required
 @role_required('author')
@@ -55,7 +58,7 @@ def book_detail(request, slug):
             book.reads += 1
             book.save(update_fields=['reads'])
 
-        # ⭐ RATING LOGIC
+        #  RATING LOGIC
         if request.method == "POST" and 'rating' in request.POST:
             rating_value = int(request.POST['rating'])
 
@@ -65,7 +68,7 @@ def book_detail(request, slug):
                 defaults={'rating': rating_value}
             )
 
-            book.update_average_rating()  # 🔥 THIS FIXES 0.0
+            book.update_average_rating()
 
             return redirect('book_detail', slug=slug)
 
@@ -133,6 +136,9 @@ def delete_book(request, slug):
 @login_required
 def book_reader(request, slug):
     book = get_object_or_404(Book, slug=slug, status='approved')
+
+    if request.user.is_authenticated:
+        update_reading_streak(request.user)
 
     if not book.book_file:
         return HttpResponse("No PDF file available for this book.", status=404)
@@ -247,3 +253,24 @@ def browse_books(request):
         'is_search': False,
         'categories': Book.CATEGORY_CHOICES
     })
+
+
+def update_reading_streak(user):
+
+    streak= ReadingStreak.objects.get(user=user)
+
+    today = date.today()
+
+    if streak.last_read_date == today:
+        return
+
+    if streak.last_read_date == today - timedelta(days=1): 
+        streak.current_streak += 1
+    else:
+        streak.current_streak = 1
+
+    if streak.current_streak > streak.highest_streak:
+        streak.highest_streak = streak.current_streak
+
+    streak.last_read_date = today
+    streak.save()

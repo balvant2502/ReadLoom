@@ -5,9 +5,8 @@ from django.contrib import messages
 from .forms import RegisterForm, LoginForm, ProfileUpdateForm
 from django.http import HttpResponse
 from .decorators import role_required
-from books.models import Book, ReadingProgress
+from books.models import Book, ReadingProgress,ReadingStreak
 from django.db.models import Avg, Prefetch, Sum
-
 
 def register_view(request):
     if request.method == "POST":
@@ -45,6 +44,8 @@ def login_view(request):
 @role_required('reader')
 def user_dashboard_view(request):
 
+    streak= ReadingStreak.objects.get(user=request.user)
+
     # only user's active reading records
     progress_qs = ReadingProgress.objects.filter(
         user=request.user,
@@ -63,7 +64,7 @@ def user_dashboard_view(request):
         )
     ).distinct()
 
-    return render(request, 'authentication/reader_dashboard.html', {'current_books': current_books})
+    return render(request, 'authentication/reader_dashboard.html', {'current_books': current_books,'streak':streak})
 
 @login_required
 @role_required('author')
