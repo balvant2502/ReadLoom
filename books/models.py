@@ -123,3 +123,13 @@ class BookRating(models.Model):
 
     def __str__(self):
         return f"{self.book.title} - {self.rating}★"
+    
+
+class ReadingStreak(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    current_streak = models.IntegerField(default=0)
+    highest_streak = models.IntegerField(default=0)
+    last_read_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.email} streak"
