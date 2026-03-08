@@ -54,7 +54,6 @@ class Book(models.Model):
     unlock_after_books = models.PositiveIntegerField(default=0)
 
     reads = models.IntegerField(default=0)
-    average_rating = models.FloatField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
     average_rating = models.FloatField(default=0.0)

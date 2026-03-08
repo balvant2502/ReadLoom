@@ -54,3 +54,22 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+class Badge(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    icon = models.ImageField(upload_to="badges/", blank=True)
+    condition_type = models.CharField(max_length=50)
+    condition_value = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class UserBadge(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "badge")
