@@ -113,6 +113,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 let pdfDoc = null;
 let pageNum = {{ last_page|default:1 }};
 let scale = 1.3;
+let readingSecondsDelta = 0;
+const csrfToken = "{{ csrf_token }}";
 
 const canvas = document.getElementById('pdf-canvas');
 const ctx = canvas.getContext('2d');
@@ -148,6 +150,13 @@ function zoomOut() {
     renderPage(pageNum);
 }
 
+// Count only active foreground reading time.
+setInterval(() => {
+    if (document.visibilityState === 'visible' && document.hasFocus()) {
+        readingSecondsDelta += 1;
+    }
+}, 1000);
+
 /* Keyboard shortcuts */
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') nextPage();
@@ -156,17 +165,29 @@ document.addEventListener('keydown', e => {
     if (e.key === '-') zoomOut();
 });
 
-function saveProgress() {
+function saveProgress(isUnload = false) {
+    if (!pdfDoc) return;
+
+    const payload = {
+        page: pageNum,
+        total: pdfDoc.numPages,
+        reading_seconds_delta: readingSecondsDelta
+    };
+
     fetch("{% url 'save_progress' book.slug %}", {
         method: "POST",
+        keepalive: isUnload,
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}"
+            "X-CSRFToken": csrfToken
         },
-        body: JSON.stringify({
-            page: pageNum,
-            total: pdfDoc.numPages
-        })
+        body: JSON.stringify(payload)
+    }).then(response => {
+        if (response.ok) {
+            readingSecondsDelta = 0;
+        }
+    }).catch(() => {
+        // Keep delta for next retry on transient failures.
     });
 }
 
@@ -177,8 +198,17 @@ renderPage = function(num) {
     saveProgress();
 };
 
+// Autosave while user stays on one page.
+setInterval(() => saveProgress(), 30000);
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        saveProgress(true);
+    }
+});
+
 /* Save when closing tab */
-window.addEventListener("beforeunload", saveProgress);
+window.addEventListener("beforeunload", () => saveProgress(true));
 </script>
 
 </body>

@@ -44,7 +44,11 @@ def login_view(request):
 @role_required('reader')
 def user_dashboard_view(request):
 
-    streak= ReadingStreak.objects.get(user=request.user)
+    streak, _ = ReadingStreak.objects.get_or_create(user=request.user)
+    total_reading_seconds = ReadingProgress.objects.filter(
+        user=request.user
+    ).aggregate(total=Sum('reading_seconds'))['total'] or 0
+    total_reading_hours = round(total_reading_seconds / 3600, 1)
 
     # only user's active reading records
     progress_qs = ReadingProgress.objects.filter(
@@ -64,7 +68,11 @@ def user_dashboard_view(request):
         )
     ).distinct()
 
-    return render(request, 'authentication/reader_dashboard.html', {'current_books': current_books,'streak':streak})
+    return render(request, 'authentication/reader_dashboard.html', {
+        'current_books': current_books,
+        'streak': streak,
+        'total_reading_hours': total_reading_hours,
+    })
 
 @login_required
 @role_required('author')

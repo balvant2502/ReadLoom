@@ -173,9 +173,13 @@ def save_progress(request, slug):
 
     page = int(data.get('page', 1))
     total = int(data.get('total', 0))
+    reading_seconds_delta = int(data.get('reading_seconds_delta', 0))
 
     if total <= 0:
         return JsonResponse({'error': 'Invalid total pages'}, status=400)
+
+    if reading_seconds_delta < 0:
+        reading_seconds_delta = 0
 
     book = get_object_or_404(Book, slug=slug)
 
@@ -188,21 +192,19 @@ def save_progress(request, slug):
     progress = round(progress, 2)
 
 
-    obj, created = ReadingProgress.objects.update_or_create(
-        user=request.user,
-        book=book,
-        defaults={
-            'last_page': page,
-            'total_pages': total,
-            'progress': progress,
-            'is_finished': progress >= 100
-        }
-    )
+    obj, _ = ReadingProgress.objects.get_or_create(user=request.user, book=book)
+    obj.last_page = page
+    obj.total_pages = total
+    obj.progress = progress
+    obj.is_finished = progress >= 100
+    obj.reading_seconds += reading_seconds_delta
+    obj.save()
 
     return JsonResponse({
         'status': 'saved',
         'page': page,
-        'progress': progress
+        'progress': progress,
+        'reading_seconds': obj.reading_seconds
     })
 
 
@@ -257,7 +259,7 @@ def browse_books(request):
 
 def update_reading_streak(user):
 
-    streak= ReadingStreak.objects.get(user=user)
+    streak, _ = ReadingStreak.objects.get_or_create(user=user)
 
     today = date.today()
 
