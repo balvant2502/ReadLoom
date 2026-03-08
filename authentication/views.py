@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from .decorators import role_required
 from books.models import Book, ReadingProgress,ReadingStreak
 from django.db.models import Avg, Prefetch, Sum
+from .models import UserBadge
 
 def register_view(request):
     if request.method == "POST":
@@ -45,6 +46,9 @@ def login_view(request):
 def user_dashboard_view(request):
 
     streak, _ = ReadingStreak.objects.get_or_create(user=request.user)
+    badges = UserBadge.objects.filter(
+        user=request.user
+    ).select_related("badge")
     total_reading_seconds = ReadingProgress.objects.filter(
         user=request.user
     ).aggregate(total=Sum('reading_seconds'))['total'] or 0
@@ -72,6 +76,7 @@ def user_dashboard_view(request):
         'current_books': current_books,
         'streak': streak,
         'total_reading_hours': total_reading_hours,
+        'badges':badges
     })
 
 @login_required

@@ -15,6 +15,7 @@ from django.contrib import messages
 from datetime import date, timedelta
 from .models import ReadingStreak
 from authentication.models import CustomUser
+from authentication.events import book_completed,streak_updated
 
 @login_required
 @role_required('author')
@@ -191,14 +192,17 @@ def save_progress(request, slug):
     progress = (page / total) * 100
     progress = round(progress, 2)
 
-
     obj, _ = ReadingProgress.objects.get_or_create(user=request.user, book=book)
+    finished_now = progress>=100 and not obj.is_finished
     obj.last_page = page
     obj.total_pages = total
     obj.progress = progress
     obj.is_finished = progress >= 100
     obj.reading_seconds += reading_seconds_delta
     obj.save()
+
+    if finished_now:
+        book_completed.send(sender=None,user=request.user)
 
     return JsonResponse({
         'status': 'saved',
@@ -276,3 +280,4 @@ def update_reading_streak(user):
 
     streak.last_read_date = today
     streak.save()
+    streak_updated.send(sender=None,user=user)

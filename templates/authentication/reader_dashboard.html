@@ -83,20 +83,20 @@
 </div>
 
 <div class="badges">
-  <div class="badge">
-    <span class="material-icons badge-icon">star_rate</span>
-    <span>Avid Reader</span>
-  </div>
+  {% for ub in badges %}
 
   <div class="badge">
-    <span class="material-icons badge-icon">auto_awesome</span>
-    <span>50 Books Completed</span>
+    {% if ub.badge.icon %}
+    <img src="{{ ub.badge.icon.url }}" />
+    {% endif %}
+    <p>{{ ub.badge.name }}</p>
   </div>
 
-  <div class="badge">
-    <span class="material-icons badge-icon">trending_up</span>
-    <span>Reading Streak Master</span>
-  </div>
+  {% empty %}
+
+  <p>No badges yet.</p>
+
+  {% endfor %}
 </div>
 
 {% endblock %}
