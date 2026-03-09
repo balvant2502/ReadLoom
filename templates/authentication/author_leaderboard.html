@@ -1,0 +1,68 @@
+{% extends "authentication/base.html" %}
+{% block title %}Author Leaderboard{% endblock %}
+
+{% block content %}
+<div class="author-welcome">
+  <span class="label-accent">Loom Rankings</span>
+  <h1>Author Leaderboard</h1>
+  <p class="subtext">See how your total reading count compares with other authors.</p>
+</div>
+
+<section class="analytics-grid leaderboard-summary-grid">
+  <div class="insight-card highlight">
+    <span class="card-tag">Your Rank</span>
+    <div class="card-value">
+      {% if current_author_rank %}#{{ current_author_rank }}{% else %}--{% endif %}
+    </div>
+    <p>Among all authors</p>
+  </div>
+
+  <div class="insight-card highlight">
+    <span class="card-tag">Your Reads</span>
+    <div class="card-value">{{ current_author_total_reads }}</div>
+    <p>Total reading count</p>
+  </div>
+
+  <div class="insight-card highlight">
+    <span class="card-tag">Total Authors</span>
+    <div class="card-value">{{ authors|length }}</div>
+    <p>Currently ranked</p>
+  </div>
+</section>
+
+<section class="table-section">
+  <h3 class="table-title">Rankings</h3>
+
+  <table class="editorial-table leaderboard-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Author</th>
+        <th>Total Reads</th>
+        <th>Books</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for author in authors %}
+      <tr class="{% if author.pk == user.pk %}is-current-author{% endif %}">
+        <td class="leaderboard-rank">#{{ author.rank }}</td>
+        <td class="book-title">
+          {% if author.first_name %}
+            {{ author.first_name }} {{ author.last_name }}
+          {% else %}
+            {{ author.email }}
+          {% endif %}
+        </td>
+        <td class="reading-count">{{ author.total_reads }}</td>
+        <td>{{ author.total_books }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No authors found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

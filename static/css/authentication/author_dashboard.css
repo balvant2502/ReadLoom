@@ -61,6 +61,21 @@
     animation: fadeIn 1s ease-out 0.4s both;
 }
 
+.leaderboard-summary-grid {
+    margin-bottom: 70px;
+}
+
+.leaderboard-table .leaderboard-rank {
+    font-family: 'Lora', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #121212;
+}
+
+.leaderboard-table tr.is-current-author td {
+    background: linear-gradient(90deg, rgba(128, 0, 0, 0.08) 0%, rgba(255, 107, 107, 0.04) 100%);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }

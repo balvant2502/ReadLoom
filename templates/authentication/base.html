@@ -94,6 +94,12 @@
           </a>
           {% elif user.user_type == 'author' %}
           <a
+            href="{% url 'author_leaderboard' %}"
+            class="{% if request.path == '/authentication/author_leaderboard/' %}active{% endif %}"
+          >
+            Leaderboard
+          </a>
+          <a
             href="{% url 'upload_book' %}"
             class="{% if request.path == '/books/upload/' %}active{% endif %}"
           >

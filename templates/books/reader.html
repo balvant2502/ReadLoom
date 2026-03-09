@@ -94,6 +94,7 @@ canvas {
     <button onclick="nextPage()">▶</button>
     <button onclick="zoomOut()">−</button>
     <button onclick="zoomIn()">＋</button>
+    <button onclick="exitReader()" title="Esc">Exit</button>
 
     <div id="page-info">
         Page <span id="page_num">1</span> / <span id="page_count">0</span>
@@ -150,6 +151,12 @@ function zoomOut() {
     renderPage(pageNum);
 }
 
+function exitReader() {
+    // Save latest progress before leaving the reader view.
+    saveProgress(true);
+    window.location.href = "{% url 'book_detail' book.slug %}";
+}
+
 // Count only active foreground reading time.
 setInterval(() => {
     if (document.visibilityState === 'visible' && document.hasFocus()) {
@@ -163,6 +170,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') prevPage();
     if (e.key === '+') zoomIn();
     if (e.key === '-') zoomOut();
+    if (e.key === 'Escape') exitReader();
 });
 
 function saveProgress(isUnload = false) {

@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from .decorators import role_required
 from books.models import Book, ReadingProgress,ReadingStreak
 from django.db.models import Avg, Prefetch, Sum
+from django.db.models.functions import Coalesce
+from django.db.models import Count
 from .models import UserBadge
 
 def register_view(request):
@@ -52,7 +54,7 @@ def user_dashboard_view(request):
     total_reading_seconds = ReadingProgress.objects.filter(
         user=request.user
     ).aggregate(total=Sum('reading_seconds'))['total'] or 0
-    total_reading_hours = round(total_reading_seconds / 3600, 1)
+    total_reading_minutes = round(total_reading_seconds / 60)
 
     # only user's active reading records
     progress_qs = ReadingProgress.objects.filter(
@@ -75,7 +77,7 @@ def user_dashboard_view(request):
     return render(request, 'authentication/reader_dashboard.html', {
         'current_books': current_books,
         'streak': streak,
-        'total_reading_hours': total_reading_hours,
+        'total_reading_minutes': total_reading_minutes,
         'badges':badges
     })
 
@@ -96,6 +98,44 @@ def author_dashboard_view(request):
         }
     
         return render(request, 'authentication/author_dashboard.html', context)
+
+
+@login_required
+@role_required('author')
+def author_leaderboard_view(request):
+    authors = list(
+        request.user.__class__.objects.filter(user_type='author')
+        .annotate(
+            total_reads=Coalesce(Sum('books__reads'), 0),
+            total_books=Count('books', distinct=True),
+        )
+        .order_by('-total_reads', '-total_books', 'first_name', 'email')
+    )
+
+    current_rank = 0
+    previous_reads = None
+    current_author_rank = None
+    current_author_total_reads = 0
+
+    # Dense ranking: authors with the same read count share the same rank.
+    for index, author in enumerate(authors, start=1):
+        if previous_reads is None or author.total_reads < previous_reads:
+            current_rank = index
+
+        author.rank = current_rank
+        previous_reads = author.total_reads
+
+        if author.pk == request.user.pk:
+            current_author_rank = current_rank
+            current_author_total_reads = author.total_reads
+
+    context = {
+        'authors': authors,
+        'current_author_rank': current_author_rank,
+        'current_author_total_reads': current_author_total_reads,
+    }
+
+    return render(request, 'authentication/author_leaderboard.html', context)
 
 @login_required
 @role_required('admin')
