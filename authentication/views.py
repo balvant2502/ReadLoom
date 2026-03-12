@@ -37,6 +37,9 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            # Redirect superusers to Django admin panel
+            if user.is_superuser:
+                return redirect('/admin/')
             return redirect_by_role(user)
     else:
         form = LoginForm(request)

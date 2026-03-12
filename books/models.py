@@ -20,6 +20,8 @@ class Book(models.Model):
         ('motivational', 'Motivational'),
         ('fiction', 'Fiction'),
         ('biography', 'Biography'),
+        ('history','History'),
+        ('mystery & thriller','Mystery & Thriller'),
     )
 
     title = models.CharField(max_length=255)

@@ -73,7 +73,11 @@ Dashboard{%endblock %} {% block content %} {% if messages %}
               action="{% url 'delete_book' book.slug %}"
               method="POST"
               style="display: inline"
-              onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');"
+              onsubmit="
+                return confirm(
+                  'Are you sure you want to delete this book? This action cannot be undone.',
+                );
+              "
             >
               {% csrf_token %}
               <button type="submit" class="link-delete">Delete</button>
